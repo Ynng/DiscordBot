@@ -1,31 +1,43 @@
-/**
- * A ping pong bot, whenever you send "ping", it replies "pong".
- */
+'use strict';
+//TODO: add tokens to git ignore before making the repo public
 
-// Import the discord.js module
-const Discord = require('discord.js');
+const Discord = require("discord.js");
+const bot = new Discord.Client();
 
-const {prefix, token} = require('./config.json');
+const config = require("./botconfig.json");
+const {token} = require("./tokens.json");
 
-// Create an instance of a Discord client
-const client = new Discord.Client();
 
-/**
- * The ready event is vital, it means that only _after_ this will your bot start reacting to information
- * received from Discord
- */
-client.on('ready', () => {
-  console.log('I am ready!');
+
+bot.on("ready", async () => {
+  console.log(`${bot.user.username} is online!`);
+  bot.user.setActivity("With my ご主人様", { type: "PLAYING" })
+    .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : "none"}`))
+    .catch(console.error);
 });
 
-// Create an event listener for messages
-client.on('message', message => {
-  // If the message is "ping"
-  if (message.content === 'ping') {
-    // Send "pong" to the same channel
-    message.channel.send('pong');
+bot.on("message", async message => {
+  if (message.author.bot) return;
+  // if(message.channel.type === "dm") return;
+
+  let prefix = config.prefix;
+
+  if (message.content.startsWith(prefix)) {
+    let messageArray = message.content.split(" ");
+    let cmd = messageArray[0];
+    let args = messageArray.slice(1);
+
+
+    console.log(`@${message.author.username} just requested "${cmd}" with args "${args}"`);
+
+    if (cmd === `${prefix}ping`) {
+      message.channel.send("pong!");
+    }
   }
 });
 
-// Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login('NTYyNDg1NTE4MTYwNDk0NTkz.XKNYqw.hyLCDAwSpLWsgKfICG3KR7brrH8');
+bot.login(token).catch(error=>{
+  console.log(error);
+  console.log("Failed to Connect");
+  return;
+})
