@@ -5,6 +5,8 @@
 // Import the discord.js module
 const Discord = require('discord.js');
 
+const {prefix, token} = require('./config.json');
+
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
@@ -19,7 +21,6 @@ client.on('ready', () => {
 // Create an event listener for messages
 client.on('message', message => {
   // If the message is "ping"
-  console.log(message.content);
   if (message.content === 'ping') {
     // Send "pong" to the same channel
     message.channel.send('pong');
