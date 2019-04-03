@@ -156,6 +156,62 @@ bot.on("message", async message => {
       majorEventsChannel.send(majorEventsEmbed);
       return message.channel.send(kickEmbed);
     }
+
+    if (cmd === "ban") {
+      let bannedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+      let bannedUserIcon = bannedUser.user.avatarURL;
+      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+      if(bannedUser.hasPermission("BAN_MEMBERS")) return message.channel.send("You can't ban an admin")
+
+      if(bannedUser.user===message.author){
+        let banEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(bannedUserIcon)
+        .addField(`**@${bannedUser.user.username} Just banned Itself**`, `${bannedUser.user} Just banned itself`)
+        .addField("Well, It asked for it", "idk......")
+
+        let majorEventsEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(bannedUserIcon)
+        .setTitle(`**@${bannedUser.user.username} Just banned Itself!**`)
+        .addField("banned User", `${bannedUser.user} with ID: ${bannedUser.user.id}`)
+        .addField("ban Time", message.createdAt);
+
+        message.guild.member(bannedUser).ban("You asked for it");
+        majorEventsChannel.send(majorEventsEmbed);
+        return message.channel.send(banEmbed);
+      }
+
+      if(!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send("You don't have the permission to ban people")
+      
+      if (!bannedUser) return message.channel.send("Couldn't find user.");
+      if(bannedUser.hasPermission("BAN_MEMBERS")) return message.channel.send("You can't ban an admin")
+      
+      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
+
+      args.shift();
+      let reason = args.join(" ");
+      if(!reason) reason = "No Reason Is Given";
+
+      let banEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(bannedUserIcon)
+        .addField(`**@${bannedUser.user.username} Just Got Baned!**`, `${bannedUser.user} Have Been Baned By ${message.author}`)
+        .addField("For the reason", reason)
+
+      let majorEventsEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(bannedUserIcon)
+        .setTitle(`**@${bannedUser.user.username} Just Got Baned!**`)
+        .addField("Baned User", `${bannedUser.user} with ID: ${bannedUser.user.id}`)
+        .addField("Baned By", `${message.author} with ID: ${message.author.id}`)
+        .addField("Baned Reason", reason)
+        .addField("Ban Time", message.createdAt);
+
+      message.guild.member(bannedUser).ban(reason);
+      majorEventsChannel.send(majorEventsEmbed);
+      return message.channel.send(banEmbed);
+    }
   }
 });
 
