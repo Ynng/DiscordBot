@@ -64,11 +64,12 @@ bot.on("message", async message => {
       return message.channel.send(serverEmbed);
     }
     if (cmd === "report") {
-      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
-      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
 
       let reportedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
       if (!reportedUser) return message.channel.send("Couldn't find user.");
+
+      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
 
       args.shift();
       let reason = args.join(" ");
@@ -101,16 +102,40 @@ bot.on("message", async message => {
     }
 
     if (cmd === "kick") {
-      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
-      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
-
       let kickedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+      let kickedUserIcon = kickedUser.user.avatarURL;
+      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+      if(kickedUser.hasPermission("KICK_MEMBERS")) return message.channel.send("You can't kick an admin")
+
+      if(kickedUser.user===message.author){
+        let kickEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(kickedUserIcon)
+        .addField(`**@${kickedUser.user.username} Just Kicked Itself**`, `${kickedUser.user} Just Kicked itself`)
+        .addField("Well, It asked for it", "idk......")
+
+        let majorEventsEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(kickedUserIcon)
+        .setTitle(`**@${kickedUser.user.username} Just Kicked Itself!**`)
+        .addField("Kicked User", `${kickedUser.user} with ID: ${kickedUser.user.id}`)
+        .addField("Kick Time", message.createdAt);
+
+        message.guild.member(kickedUser).kick("You asked for it");
+        majorEventsChannel.send(majorEventsEmbed);
+        return message.channel.send(kickEmbed);
+      }
+
+      if(!message.member.hasPermission("KICK_MEMBERS")) return message.channel.send("You don't have the permission to Kick People")
+      
       if (!kickedUser) return message.channel.send("Couldn't find user.");
+      if(kickedUser.hasPermission("KICK_MEMBERS")) return message.channel.send("You can't kick an admin")
+      
+      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
 
       args.shift();
       let reason = args.join(" ");
       if(!reason) reason = "No Reason Is Given";
-      let kickedUserIcon = kickedUser.user.avatarURL;
 
       let kickEmbed = new Discord.RichEmbed()
         .setColor("#ff99e6")
@@ -127,6 +152,7 @@ bot.on("message", async message => {
         .addField("Kicked Reason", reason)
         .addField("Kick Time", message.createdAt);
 
+      message.guild.member(kickedUser).kick(reason);
       majorEventsChannel.send(majorEventsEmbed);
       return message.channel.send(kickEmbed);
     }
