@@ -64,8 +64,8 @@ bot.on("message", async message => {
       return message.channel.send(serverEmbed);
     }
     if (cmd === "report") {
-      let reportsChannel = message.guild.channels.find("name", `${config.reportsChannel}`);
-      if (!reportsChannel) return message.channel.send(`Can't find the reports channel: "${config.reportsChannel}", please create one or change the reports channel in settings`);
+      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
 
       let reportedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
       if (!reportedUser) return message.channel.send("Couldn't find user.");
@@ -85,7 +85,7 @@ bot.on("message", async message => {
         .addField("For the reason", reason)
 
 
-      let reportChannelEmbed = new Discord.RichEmbed()
+      let majorEventsEmbed = new Discord.RichEmbed()
         .setColor("#ff99e6")
         .setThumbnail(reportedUserIcon)
         .setTitle(`**@${reportedUser.user.username} Got Reported!**`)
@@ -96,11 +96,14 @@ bot.on("message", async message => {
 
 
 
-      reportsChannel.send(reportChannelEmbed);
+      majorEventsChannel.send(majorEventsEmbed);
       return message.channel.send(reportPublicEmbed);
     }
 
     if (cmd === "kick") {
+      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
+
       let kickedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
       if (!kickedUser) return message.channel.send("Couldn't find user.");
 
@@ -115,6 +118,16 @@ bot.on("message", async message => {
         .addField(`**@${kickedUser.user.username} Just Got Kicked!**`, `${kickedUser.user} Have Been Kicked By ${message.author}`)
         .addField("For the reason", reason)
 
+      let majorEventsEmbed = new Discord.RichEmbed()
+        .setColor("#ff99e6")
+        .setThumbnail(kickedUserIcon)
+        .setTitle(`**@${kickedUser.user.username} Just Got Kicked!**`)
+        .addField("Kicked User", `${kickedUser.user} with ID: ${kickedUser.user.id}`)
+        .addField("Kicked By", `${message.author} with ID: ${message.author.id}`)
+        .addField("Kicked Reason", reason)
+        .addField("Kick Time", message.createdAt);
+
+      majorEventsChannel.send(majorEventsEmbed);
       return message.channel.send(kickEmbed);
     }
   }
