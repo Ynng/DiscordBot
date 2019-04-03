@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const config = require("../botconfig.json");
+const utils = require("../utils")
 
 
 module.exports.run = async (bot, message, args) => {
@@ -21,39 +22,39 @@ module.exports.run = async (bot, message, args) => {
     if (!reason) return message.channel.send("You need a reason to ban someone");
 
     let embed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**@${target.user.username} Just Got Banned!**`)
         .addField(`I have banned`, `${target.user}`)
         .addField(`On the behalf of`, `${message.author}`)
         .addField("For the reason", reason)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(embed, message.author);
+
 
     let majorEventsEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**Ban**`)
         .addField("Banned User", `${target.user} with ID: ${target.user.id}`)
         .addField("Banned By", `${message.author} with ID: ${message.author.id}`)
         .addField("Ban Reason", reason)
         .addField("Ban Time", message.createdAt)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(majorEventsEmbed, message.author);
+
 
     let pmEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(authorIcon)
         .setTitle(`**You Just Got Banned from the server "${message.guild.name}"**`)
         .addField("You got banned by", `${message.author}`)
         .addField("For the reason", reason)
         .addField("At", message.createdAt)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(pmEmbed, message.author);
+
 
 
     target.user.send(pmEmbed);
-    if (majorEventsChannel)majorEventsChannel.send(majorEventsEmbed);
+    if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
     message.channel.send(embed);
     //timmeout for the pm to send
     setTimeout(() => {

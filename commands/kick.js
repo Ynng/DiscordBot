@@ -21,7 +21,7 @@ module.exports.run = async (bot, message, args) => {
     if (!reason) reason = "No Reason was Given";
 
     let embed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**@${target.user.username} Just Got Kicked!**`)
         .addField(`I have kicked`, `${target.user}`)
@@ -31,7 +31,7 @@ module.exports.run = async (bot, message, args) => {
         .setTimestamp();
 
     let majorEventsEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**Kick**`)
         .addField("Kicked User", `${target.user} with ID: ${target.user.id}`)
@@ -43,7 +43,7 @@ module.exports.run = async (bot, message, args) => {
 
 
     let pmEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
+        .setColor(`${config.embedColor}`)
         .setThumbnail(authorIcon)
         .setTitle(`**You Just Got Kicked from the server "${message.guild.name}"**`)
         .addField("You got kicked by", `${message.author}`)
