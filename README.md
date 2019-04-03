@@ -1,0 +1,2 @@
+# DiscordBot
+TODO: write readme
