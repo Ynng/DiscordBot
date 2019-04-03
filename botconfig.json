@@ -1,4 +1,4 @@
 { 
-    "prefix":"/",
-    "majorEventsChannel" : "reports"
+    "prefix":"!",
+    "majorEventsChannel" : "major-events"
 }
