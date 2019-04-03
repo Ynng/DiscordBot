@@ -11,21 +11,23 @@ const fs = require("fs");
 
 bot.commands = new Discord.Collection();
 
-fs.readdir("./commands", (err, files)=>{
-  if(err) console.log(err);
-  
-  let jsfile = files.filter(f=>f.split(".").pop()==="js");
-    if(jsfile.length <= 0){
-      console.log("Can't find comands.");
-      return;
-    }
+fs.readdir("./commands", (err, files) => {
+  if (err) console.log(err);
 
-    jsfile.forEach((f,i)=>{
-      let props = require(`./commands/${f}`)
-      console.log(`${f} loaded!`);
-      bot.commands.set(props.help.name, props);
-    })
+  let jsfile = files.filter(f => f.split(".").pop() === "js");
+  if (jsfile.length <= 0) {
+    console.log("Can't find comands.");
+    return;
   }
+
+  jsfile.forEach((f, i) => {
+    let props = require(`./commands/${f}`)
+    console.log(`${f} loaded!`);
+    for(var a = 0; a < props.help.name.length;a++){
+      bot.commands.set(props.help.name[a], props);
+    }
+  })
+}
 );
 
 bot.on("ready", async () => {
@@ -49,7 +51,7 @@ bot.on("message", async message => {
     console.log(`@${message.author.username} just requested "${cmd}" with args "${args}"`);
 
     var commmandfile = bot.commands.get(cmd);
-    if(commmandfile) commmandfile.run(bot,message,args);
+    if (commmandfile) commmandfile.run(bot, message, args);
   }
 });
 

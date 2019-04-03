@@ -4,7 +4,7 @@ const utils = require("../useful/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send("You don't have the permission to Ban People")
+    if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send(`You don't have the permission to ${utils.getPermissionsString("BAN_MEMBERS")}`)
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return message.channel.send("Can't find user.");
@@ -63,5 +63,5 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: "ban"
+    name: ["ban"]
 }
