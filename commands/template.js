@@ -3,7 +3,6 @@ const config = require("../botconfig.json");
 
 
 module.exports.run = async (bot, message, args) => {
-    console.log("works");
     
     
 }
