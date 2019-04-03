@@ -1,4 +1,5 @@
 { 
     "prefix":"!",
-    "majorEventsChannel" : "major-events"
+    "majorEventsChannel" : "major-events",
+    "embedColor" : "#ff99e6"
 }
