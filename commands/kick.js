@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const config = require("../botconfig.json");
+const utils = require("../useful/utils")
 
 
 module.exports.run = async (bot, message, args) => {
@@ -27,8 +28,8 @@ module.exports.run = async (bot, message, args) => {
         .addField(`I have kicked`, `${target.user}`)
         .addField(`On the behalf of`, `${message.author}`)
         .addField("For the reason", reason)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(embed, message.author);
+
 
     let majorEventsEmbed = new Discord.RichEmbed()
         .setColor(`${config.embedColor}`)
@@ -38,8 +39,8 @@ module.exports.run = async (bot, message, args) => {
         .addField("Kicked By", `${message.author} with ID: ${message.author.id}`)
         .addField("Kick Reason", reason)
         .addField("Kick Time", message.createdAt)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(majorEventsEmbed, message.author);
+
 
 
     let pmEmbed = new Discord.RichEmbed()
@@ -49,11 +50,10 @@ module.exports.run = async (bot, message, args) => {
         .addField("You got kicked by", `${message.author}`)
         .addField("For the reason", reason)
         .addField("At", message.createdAt)
-        .setFooter(`Requested by: ${message.author.username}`, authorIcon)
-        .setTimestamp();
+    utils.embedAddStamp(pmEmbed, message.author);
 
     target.user.send(pmEmbed);
-    if (majorEventsChannel)majorEventsChannel.send(majorEventsEmbed);
+    if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
     message.channel.send(embed);
     //timmeout for the pm to send
     setTimeout(() => {

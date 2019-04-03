@@ -50,7 +50,6 @@ bot.on("message", async message => {
 
     var commmandfile = bot.commands.get(cmd);
     if(commmandfile) commmandfile.run(bot,message,args);
-
   }
 });
 

@@ -2,7 +2,7 @@
 
 const { RichEmbed } = require("discord.js");
 
-const { homeUrl } = require("./botconfig.json");
+const { homeUrl } = require("../botconfig.json");
 module.exports = {
     embedAddStamp:function(embed, author){
         embed
