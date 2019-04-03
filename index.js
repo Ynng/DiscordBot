@@ -7,7 +7,26 @@ const bot = new Discord.Client();
 const config = require("./botconfig.json");
 const { token } = require("./tokens.json");
 
+const fs = require("fs");
 
+bot.commands = new Discord.Collection();
+
+fs.readdir("./commands", (err, files)=>{
+  if(err) console.log(err);
+  
+  let jsfile = files.filter(f=>f.split(".").pop()==="js");
+    if(jsfile.length <= 0){
+      console.log("Can't find comands.");
+      return;
+    }
+
+    jsfile.forEach((f,i)=>{
+      let props = require(`./commands/${f}`)
+      console.log(`${f} loaded!`);
+      bot.commands.set(props.help.name, props);
+    })
+  }
+);
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} is online!`);
@@ -29,9 +48,10 @@ bot.on("message", async message => {
 
     console.log(`@${message.author.username} just requested "${cmd}" with args "${args}"`);
 
-    if (cmd === "ping") {
-      message.channel.send("pong!");
-    }
+    var commmandfile = bot.commands.get(cmd);
+    if(commmandfile) commmandfile.run(bot,message,args);
+
+
     if (cmd === "info") {
       let botIcon = bot.user.displayAvatarURL;
       let botAge = new Date(Date.now() - bot.user.createdTimestamp);
@@ -63,44 +83,6 @@ bot.on("message", async message => {
 
       return message.channel.send(serverEmbed);
     }
-    if (cmd === "report") {
-
-      let reportedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-      if (!reportedUser) return message.channel.send("Couldn't find user.");
-
-      let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
-      if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
-
-      args.shift();
-      let reason = args.join(" ");
-      if (!reason) return message.channel.send("Please Provide a reason for the report");
-
-      let reportedUserIcon = reportedUser.user.avatarURL;
-
-      let reportPublicEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
-        .setThumbnail(reportedUserIcon)
-        .setTitle(`**@${reportedUser.user.username} Just Got Reported!**`)
-        .addField("I have reported", reportedUser.user)
-        .addField("On the behalf of", message.author)
-        .addField("For the reason", reason)
-
-
-      let majorEventsEmbed = new Discord.RichEmbed()
-        .setColor("#ff99e6")
-        .setThumbnail(reportedUserIcon)
-        .setTitle(`**@${reportedUser.user.username} Got Reported!**`)
-        .addField("Reported User", `${reportedUser.user} with ID: ${reportedUser.user.id}`)
-        .addField("Reported By", `${message.author} with ID: ${message.author.id}`)
-        .addField("Report Reason", reason)
-        .addField("Report Time", message.createdAt);
-
-
-
-      majorEventsChannel.send(majorEventsEmbed);
-      return message.channel.send(reportPublicEmbed);
-    }
-
     if (cmd === "kick") {
       let kickedUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
       let kickedUserIcon = kickedUser.user.avatarURL;
