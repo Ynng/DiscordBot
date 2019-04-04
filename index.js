@@ -9,6 +9,8 @@ const { token } = require("./tokens.json");
 
 const fs = require("fs");
 
+require("./util/eventHandler")(bot)
+
 bot.commands = new Discord.Collection();
 
 fs.readdir("./commands", (err, files) => {
@@ -29,13 +31,6 @@ fs.readdir("./commands", (err, files) => {
   })
 }
 );
-
-bot.on("ready", async () => {
-  console.log(`${bot.user.username} is online!`);
-  bot.user.setActivity(`for the prefix: ${config.prefix}`, { type: "WATCHING" })
-    .then(presence => console.log(`Activity set to "${presence.game ? presence.game.name : "none"}"`))
-    .catch(console.error);
-});
 
 bot.on("message", async message => {
   if (message.author.bot) return;
