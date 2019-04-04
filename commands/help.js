@@ -33,8 +33,8 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
     name: "help",
-    description: "This displays some info on a specific commmand",
-    usage:"{command name} ",
-    example:`${config.prefix}help kick`,
-    aliases: ["help", "?", "h", "commands"]
+    description: "This displays some information on a specific commmand",
+    args:"{command name}",
+    example:`kick`,
+    aliases: ["help", "?", "h"]
 }

@@ -4,12 +4,12 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    if (!message.member.hasPermission("KICK_MEMBERS")) return message.channel.send("You don't have the permission to Kick People")
+    if (!message.member.hasPermission(this.help.permission)) return message.channel.send(`You don't have the permission to ${utils.getPermissionsString(this.help.permission)}`)
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return message.channel.send("Can't find user.");
     if (!target.kickable) return message.channel.send("The target is unkickable")
-    if (target.hasPermission("KICK_MEMBERS")) return message.channel.send("I can't kick an admin")
+    if (target.hasPermission(this.help.permission)) return message.channel.send("I can't kick an admin")
 
     let targetIcon = target.user.avatarURL;
     let authorIcon = message.author.avatarURL;
@@ -62,5 +62,10 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
+    name:"kick",
+    args:"{@user} [Reason]",
+    description:"Kicks the targetted user from this server.",
+    permission:"KICK_MEMBERS",
+    example:"@xX_KoolGamer6903_Xx for being retarded",
     aliases: ["kick"]
 }

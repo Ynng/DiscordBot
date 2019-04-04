@@ -4,12 +4,12 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send(`You don't have the permission to ${utils.getPermissionsString("BAN_MEMBERS")}`)
+    if (!message.member.hasPermission(this.help.permission)) return message.channel.send(`You don't have the permission to ${utils.getPermissionsString(this.help.permission)}`)
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return message.channel.send("Can't find user.");
     if (!target.bannable) return message.channel.send("The target is unbannable")
-    if (target.hasPermission("BAN_MEMBERS")) return message.channel.send("I can't ban an admin")
+    if (target.hasPermission(this.help.permission)) return message.channel.send("I can't ban an admin")
 
     let targetIcon = target.user.avatarURL;
     let authorIcon = message.author.avatarURL;
@@ -64,9 +64,9 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
     name:"ban",
-    usage:`{@user} {Reason} `,
+    args:"{@user} {Reason}",
     description:"Bans the targetted user from this server.",
     permission:"BAN_MEMBERS",
-    example:`${config.prefix}ban @xX_KoolGamer6903_Xx`,
+    example:"@xX_KoolGamer6903_Xx for being retarded",
     aliases: ["ban"]
 }
