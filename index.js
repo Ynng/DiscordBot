@@ -29,6 +29,7 @@ fs.readdir("./commands", (err, files) => {
       bot.commands.set(props.help.aliases[a], props);
     }
   })
+  console.log(`Loaded ${jsfile.length} commands in total`)
 }
 );
 
