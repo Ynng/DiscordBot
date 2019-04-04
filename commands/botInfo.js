@@ -20,6 +20,6 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
   name:"botinfo",
-  description:"Some bots stats",
+  description:"This displays some information on the bot, me!",
   aliases: ["info", "botinfo", "bot", "stats", "stat"]
 }

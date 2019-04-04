@@ -52,19 +52,29 @@ module.exports = {
         return output;
     },
 
-    getDefaultUsageString:function(commandName){
-        return `${config.prefix}${commandName}`
-    },
+    getHelpString: function (command) {
+        let usage = command.help.args;
+        let aliases = command.help.aliases;
+        let permission = command.help.permission;
+        let description = command.help.description;
+        let example = command.help.example;
+        let name = command.help.name;
 
-    getHelpString:function(command){
-        return `\`\`\`html\n< ${this.getDefaultUsageString(command.help.name)+(" " + (command.help.usage || ""))}>\`\`\`\`\`\`md\n# Aliases\n${this.getArrayString(command.help.aliases)}\n# Permission Needed\n${this.getPermissionsString(command.help.permission || "None")}\n# Description\n${command.help.description || "No description is provided"}\n# Example Commmand(s)\n${command.help.example || "No example is provided"}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
-    },
+        if (!name) name = aliases[0];
+        if (!usage) {
+            usage = `${config.prefix}${name}`;
+            if (!example) example = usage;
+        }
+        else {
+            usage = `${config.prefix}${name} ${usage}`;
+            if (!example) example = "No example provided"
+            else example = `${config.prefix}${name} ${example}`
+        }
+        if (!permission) permission = "None";
+        permission = this.getPermissionsString(permission);
+        if (!description) description = "No description provided";
+        aliases = aliases.join(" , ");
 
-    getArrayString:function(input){
-        return input.join(" , ")
-    },
-
-    addPrefix:function(input){
-        return config.prefix + input;
-    },
+        return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
+    }
 };

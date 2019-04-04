@@ -10,7 +10,7 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
     name:"template",
-    usage:`{test} `,
+    args:`{test} `,
     description:"template",
     permission:"",
     example:`${config.prefix}template test`,
