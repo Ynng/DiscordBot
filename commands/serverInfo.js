@@ -19,5 +19,6 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
   name: "serverinfo",
+  description: "This displays some information on the current server",
   aliases: ["server", "serverinfo", "guildinfo"]
 }
