@@ -63,5 +63,10 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: ["ban"]
+    name:"ban",
+    usage:`{@user} {Reason} `,
+    description:"Bans the targetted user from this server.",
+    permission:"BAN_MEMBERS",
+    example:`${config.prefix}ban @xX_KoolGamer6903_Xx`,
+    aliases: ["ban"]
 }

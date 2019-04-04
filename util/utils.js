@@ -1,8 +1,9 @@
 "use strict";
 
-const { RichEmbed } = require("discord.js");
+const DIscord = require("discord.js");
 
-const { homeUrl } = require("../botconfig.json");
+const config = require("../botconfig.json");
+
 module.exports = {
     embedAddStamp: function (embed, author) {
         embed
@@ -49,5 +50,21 @@ module.exports = {
             .replace("USE_EXTERNAL_EMOJIS", "Use External Emojis")
             .replace("USE_VAD", "Use Voice Activation Detection");
         return output;
-    }
+    },
+
+    getDefaultUsageString:function(commandName){
+        return `${config.prefix}${commandName}`
+    },
+
+    getHelpString:function(command){
+        return `\`\`\`html\n< ${this.getDefaultUsageString(command.help.name)+(" " + (command.help.usage || ""))}>\`\`\`\`\`\`md\n# Aliases\n${this.getArrayString(command.help.aliases)}\n# Permission Needed\n${this.getPermissionsString(command.help.permission || "None")}\n# Description\n${command.help.description || "No description is provided"}\n# Example Commmand(s)\n${command.help.example || "No example is provided"}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
+    },
+
+    getArrayString:function(input){
+        return input.join(" , ")
+    },
+
+    addPrefix:function(input){
+        return config.prefix + input;
+    },
 };

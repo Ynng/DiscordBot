@@ -9,5 +9,10 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-    name: ["template"]
+    name:"template",
+    usage:`{test} `,
+    description:"template",
+    permission:"",
+    example:`${config.prefix}template test`,
+    aliases: ["template"]
 }
