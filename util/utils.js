@@ -1,6 +1,6 @@
 "use strict";
 
-const DIscord = require("discord.js");
+const Discord = require("discord.js");
 
 const config = require("../botconfig.json");
 
@@ -76,5 +76,14 @@ module.exports = {
         aliases = aliases.join(" , ");
 
         return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
+    },
+
+    getCommandsNameArray:function(bot){
+        var output = [];
+        
+        bot.commands.array().forEach(command => {
+            output.push(command.help.name);
+        });
+        return output;
     }
 };
