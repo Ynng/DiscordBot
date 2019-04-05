@@ -14,7 +14,7 @@ module.exports = bot => {
         bot.user.setActivity(`${status} | "${config.prefix}help"`, { type: "WATCHING" })
             .then(presence => console.log(`Activity set to "${status}"`))
             .catch(console.error);
-        if(statusNum>=statuses.length-1)statusNum=0;
+        if (statusNum >= statuses.length - 1) statusNum = 0;
         else statusNum++;
     }, 5000);
 }

@@ -42,8 +42,12 @@ bot.on("message", async message => {
 
   var prefix = config.prefix;
 
-  if (message.content.startsWith(prefix)) {
-    var msg = message.content.substring(prefix.length).trim();
+  if (message.content.startsWith(prefix)||message.channel.type=="dm") {
+    if(message.content.startsWith(prefix)) {
+      var msg = message.content.substring(prefix.length).trim();
+    }else {
+      var msg = message.content;
+    }
     var args = msg.split(" ");
     var cmd = args.shift();
 

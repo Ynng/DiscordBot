@@ -1,5 +1,7 @@
-{ 
-    "prefix":"!",
-    "majorEventsChannel" : "major-events",
-    "embedColor" : "#ff99e6"
+{
+    "prefix": "!",
+    "majorEventsChannel": "major-events",
+    "embedColor": "#6bdbff",
+    "errorColor": "#b71c1c",
+    "tempTime": 5000
 }
