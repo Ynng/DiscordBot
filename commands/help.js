@@ -10,7 +10,12 @@ module.exports.run = async (bot, message, args) => {
 
         // message.channel.send(utils.getHelpString(command));
     } else {
-        return message.channel.send(utils.getCommandsNameArray(bot));
+        var embed = new Discord.RichEmbed()
+            .setColor(`${config.embedColor}`)
+            .addField("List of commands", utils.getCommandsNameArray(bot).join(" , "))
+        utils.embedAddStamp(embed, message.author);
+        message.channel.send(embed);
+        return;
     }
 
     if (bot.commands.get(bot.aliases.get(targetCommand))) {
@@ -29,8 +34,8 @@ module.exports.run = async (bot, message, args) => {
 
         if (message.channel.type != "dm") {
             var publicEmbed = new Discord.RichEmbed()
-            .setColor(`${config.embedColor}`)
-            .setTitle(":ok_hand:  Check your DMs!")
+                .setColor(`${config.embedColor}`)
+                .setTitle(":ok_hand:  Check your DMs!")
             utils.embedAddStamp(publicEmbed, message.author);
             message.channel.send(publicEmbed);
         }
