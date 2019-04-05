@@ -78,12 +78,60 @@ module.exports = {
         return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
     },
 
-    getCommandsNameArray:function(bot){
+    getCommandsNameArray: function (bot) {
         var output = [];
-        
+
         bot.commands.array().forEach(command => {
             output.push(command.help.name);
         });
         return output;
+    },
+
+    getSimpleEmbed: function (text, user, color) {
+        let embed = new Discord.RichEmbed()
+            .setTitle(text)
+            .setColor(color)
+        this.embedAddStamp(embed, user);
+
+        return embed;
+    },
+
+    errorTemporary: function (text, message) {
+        let embed = new Discord.RichEmbed()
+            .setTitle(`:no_entry_sign: ${text}`)
+            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
+            .setColor(config.errorColor)
+        message.channel.send(embed).then(r => {
+            this.safeDeleteMessage(r, config.tempTime);
+            this.safeDeleteMessage(message, config.tempTime);
+        });
+    },
+
+    errorPermanent: function (text, message) {
+        let embed = new Discord.RichEmbed()
+            .setTitle(`:no_entry_sign: ${text}`)
+            .setColor(config.errorColor)
+        this.embedAddStamp(embed, message.author);
+        message.channel.send(embed)
+    },
+
+    errorPreferTemporary: function (text, message) {
+        if (message.deletable)this.errorTemporary(text, message);
+        else this.errorPermanent(text, message);
+    },
+
+    checkServer: function (message) {
+        if (message.channel.type != "text") {
+            this.errorPermanent("This command only works in a server", message);
+            return true;
+        } else return false;
+    },
+
+    safeDeleteMessage: function (message, timeout) {
+        message.delete(timeout).catch(error => {
+            console.log(error);
+            console.log("Failed to delete message");
+            return;
+        });
     }
 };
