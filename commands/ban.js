@@ -5,8 +5,8 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
     if (utils.checkServer(message)) return;
-    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.errorPreferTemporary("I don't have the permission needed to ban users", message);
-    if (!message.member.hasPermission(this.help.permission)) return utils.errorPreferTemporary("You don't have the permission needed to ban users", message);
+    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.errorPreferTemporary("I don't have the permission to ban users", message);
+    if (!message.member.hasPermission(this.help.permission)) return utils.errorPreferTemporary("You don't have the permission to ban users", message);
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return utils.errorPreferTemporary("Can't find the user", message)
@@ -17,12 +17,12 @@ module.exports.run = async (bot, message, args) => {
     let authorIcon = message.author.avatarURL;
     let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
 
-    if (!majorEventsChannel) utils.errorPreferTemporary(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this ban won't be recorded`, message);
-
     args.shift();
     let reason = args.join(" ");
     if (!reason) return utils.errorPreferTemporary("You need a reason to ban someone", message);
-
+    
+    if (!majorEventsChannel) utils.errorPermanent(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this ban won't be recorded`, message);
+    
     let embed = new Discord.RichEmbed()
         .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
@@ -60,7 +60,7 @@ module.exports.run = async (bot, message, args) => {
     message.channel.send(embed);
     //timmeout for the pm to send
     setTimeout(() => {
-        // message.guild.member(target).ban();
+        message.guild.member(target).ban();
     }, 2500);
 }
 
