@@ -96,6 +96,27 @@ module.exports = {
         this.embedAddStamp(message, embed, message.author);
         return message.channel.send(embed)
     },
+    
+    editTemporary: function (text, editMessage, originMessage, color) {
+        if (!originMessage.deletable) return this.editPermanent(text, editMessage, originMessage, color);
+        let embed = new Discord.RichEmbed()
+            .setTitle(`${text}`)
+            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
+            .setColor(color)
+        return editMessage.edit(embed).then(msg => {
+            this.safeDeleteMessage(msg, config.tempTime);
+            this.safeDeleteMessage(originMessage, config.tempTime);
+        });
+    },
+
+    editPermanent: function (text, editMessage, originMessage, color) {
+        let embed = new Discord.RichEmbed()
+            .setTitle(`${text}`)
+            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
+            .setColor(color)
+        this.embedAddStamp(originMessage, embed, originMessage.author);
+        return editMessage.edit(embed)
+    },
 
     isDM: function (message) {
         if (message.channel.type != "text") {

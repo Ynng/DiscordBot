@@ -6,33 +6,41 @@ const request = require("request-promise-native");
 
 
 module.exports.run = async (bot, message, args) => {
+    let loadingEmbed = new Discord.RichEmbed()
+        .setTitle(":thinking:  fetching...")
+        .setColor(config.embedColor)
+    utils.embedAddStamp(message, loadingEmbed, message.author);
+
+    let loadingMessage;
+
     let searchQuery = args.join(" ");
     if (!searchQuery) return utils.simpleError("You need to enter something to search for", message, true);
     let requestQuery = {
         uri: 'https://www.reddit.com/search.json',
         qs: {
             q: searchQuery,
-            sort: "relevance"
+            sort: "relevance",
+            limit: 50
         },
         json: true
     }
 
+    loadingMessage = await message.channel.send(loadingEmbed)
     let requestResponse = (await request(requestQuery, (error, response, body) => {
         if ((response.statusCode % 100) != 2) {
             // console.log("everything correct");
         } else {
             console.log(`error: ${response.statusCode} when requesting from reddit`);
-            utils.simpleTemporary(`:thinking: error ${response.statusCode} from reddit... interesting`, message, config.errorColor);
+            utils.editTemporary(`:thinking: error ${response.statusCode} from reddit...`, loadingMessage, config.errorColor);
+            // return;
         }
-    }).catch(error => {
+    }).catch(error => { }))
 
-    })).data
+    if (!requestResponse.data) return utils.editTemporary(":frowning: Didn't get any response from reddit...", loadingMessage, message, config.errorColor);
+    let responseLength = requestResponse.data.dist
+    if (responseLength.data < 1) return utils.editTemporary(":frowning: Didn't find anything at all, maybe try searching something else?", loadingMessage, message, config.errorColor);
 
-    if (!requestResponse) return utils.simpleTemporary(":thinking: Didn't get any response from reddit...", message, config.errorColor);
-    let responseLength = requestResponse.dist
-    if (responseLength < 1) return utils.simpleTemporary(":thinking: Didn't find anything at all, maybe try searching something else?", message, config.errorColor);
-
-    requestResponse = requestResponse.children;
+    requestResponse = requestResponse.data.children;
 
 
     for (var i = requestResponse.length - 1; i >= 0; i--) {
@@ -41,33 +49,33 @@ module.exports.run = async (bot, message, args) => {
             || requestResponse[i].data.is_video
             || requestResponse[i].data.media
             || !(requestResponse[i].data.url.endsWith(".png")
-            || requestResponse[i].data.url.endsWith(".jpg")
-            || requestResponse[i].data.url.endsWith(".gif")))
+                || requestResponse[i].data.url.endsWith(".jpg")
+                || requestResponse[i].data.url.endsWith(".gif")))
             requestResponse.splice(i, 1);
     }
-    
+
     responseLength = requestResponse.length;
 
-    if (responseLength < 1) return utils.simpleTemporary(":thinking: Didn't find any **sfw images**, maybe try searching something else?", message, config.errorColor);
+    if (responseLength < 1) return utils.editTemporary(":frowning: Didn't find any **sfw images**, maybe try searching something else?", loadingMessage, message, config.errorColor);
 
     let childrenIndex = Math.floor(Math.random() * responseLength);
     // let childrenIndex = 0
     requestResponse = requestResponse[childrenIndex].data;
-    console.log(requestResponse)
+    // console.log(requestResponse)
 
-    let embed = new Discord.RichEmbed()
-        .setTitle(`r/${requestResponse.subreddit}/${requestResponse.title}`)
+    let redditEmbed = new Discord.RichEmbed()
+        .setAuthor(`r/${requestResponse.subreddit}`)
+        .setTitle(`${requestResponse.title}`)
         .setImage(requestResponse.url)
-        .setColor(config.embedColor)
-    if (message.channel.type != "dm") utils.embedAddStamp(message, embed, message.author);
-
-    message.channel.send(embed);
+        .setColor(config.validColor)
+    utils.embedAddStamp(message, redditEmbed, message.author);
+    loadingMessage.edit(redditEmbed)
 }
 
 module.exports.help = {
     name: "reddit",
     args: `{stuff to search} `,
     example: "chika",
-    description: "Pulls a random image from the top 25 reddit search results",
+    description: "Pulls a random image from the top 50 reddit search results",
     aliases: ["reddit", "r"],
 }
