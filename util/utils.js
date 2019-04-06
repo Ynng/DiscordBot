@@ -93,13 +93,13 @@ module.exports = {
         let embed = new Discord.RichEmbed()
             .setTitle(`${text}`)
             .setColor(color)
-        this.embedAddStamp(embed, message.author);
+        this.embedAddStamp(message, embed, message.author);
         message.channel.send(embed)
     },
 
     isDM: function (message) {
         if (message.channel.type != "text") {
-            this.errorPermanent("This command only works in a server", message);
+            this.simpleError("This command only works in a server", message, false);
             return true;
         } else return false;
     },
@@ -111,9 +111,11 @@ module.exports = {
         });
     },
 
-    embedAddStamp: function (embed, author) {
-        embed
-            .setFooter(`Requested by: ${author.username}`, author.avatarURL)
-            .setTimestamp();
+    embedAddStamp: function (message, embed, author) {
+        if (message.channel.type != "dm") {
+            embed
+                .setFooter(`Requested by: ${author.username}`, author.avatarURL)
+                .setTimestamp();
+        }
     }
 };

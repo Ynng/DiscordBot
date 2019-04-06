@@ -4,16 +4,11 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    let embed = new Discord.RichEmbed()
-        .setTitle(":ping_pong: pong")
-        .setColor(`${config.embedColor}`)
-    utils.embedAddStamp(embed, message.author);
-
-    message.channel.send(embed);
+    utils.simplePermanent(":ping_pong: pong", message, config.embedColor);
 }
 
 module.exports.help = {
-    name:"ping",
-    description:"funz",
+    name: "ping",
+    description: "funz",
     aliases: ["ping"]
 }

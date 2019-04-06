@@ -19,7 +19,7 @@ module.exports.run = async (bot, message, args) => {
         var embed = new Discord.RichEmbed()
             .setColor(`${config.embedColor}`)
             .addField("List of commands", commandsArray.join(" , "))
-        utils.embedAddStamp(embed, message.author);
+        utils.embedAddStamp(message, embed, message.author);
         message.channel.send(embed);
         return;
     }
@@ -28,22 +28,22 @@ module.exports.run = async (bot, message, args) => {
         command = bot.commands.get(bot.aliases.get(targetCommand));
         var pmEmbed = new Discord.RichEmbed()
             .setColor(`${config.embedColor}`)
-        utils.embedAddStamp(pmEmbed, message.author);
+        utils.embedAddStamp(message, pmEmbed, message.author);
 
         var dmAble = true;
-        message.author.send(utils.getHelpString(command)).catch(error => {
+        await message.author.send(utils.getHelpString(command)).catch(error => {
             console.log("Error, can't send dm to a user A")
-        })
-        await message.author.send(pmEmbed).catch(error => {
-            console.log("Error, can't send dm to a user B");
             dmAble = false;
             utils.simpleError("I can't dm you, please change your settings or unblock me :disappointed_relieved: ", message, true)
-        });
-
-        if (message.channel.type != "dm" && dmAble) {
-            utils.simpleTemporary(":ok_hand:  Check your DMs!", message, config.embedColor)
+        })
+        if (message.channel.type != "dm") {
+            message.author.send(pmEmbed).catch(error => {
+                console.log("Error, can't send dm to a user B");
+            });
+            if (dmAble) {
+                utils.simpleTemporary(":ok_hand:  Check your DMs!", message, config.embedColor)
+            }
         }
-
     } else {
         utils.simpleError("I can't find that command :frowning2: ", message, true)
     }

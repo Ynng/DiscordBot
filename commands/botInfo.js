@@ -12,7 +12,7 @@ module.exports.run = async (bot, message, args) => {
     .addField("My Name", bot.user.username)
     .addField("My Age", `${utils.getAgeString(utils.getAgeDate(bot.user.createdAt))}`)
     .addField("My Prefix", `\`${config.prefix}\``)
-  utils.embedAddStamp(embed, message.author);
+  utils.embedAddStamp(message, embed, message.author);
 
 
   message.channel.send(embed);

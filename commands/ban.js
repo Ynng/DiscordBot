@@ -30,7 +30,7 @@ module.exports.run = async (bot, message, args) => {
         .addField(`I have banned`, `${target.user}`)
         .addField(`On the behalf of`, `${message.author}`)
         .addField("For the reason", reason)
-    // utils.embedAddStamp(embed, message.author);
+    // utils.embedAddStamp(message, embed, message.author);
 
 
     let majorEventsEmbed = new Discord.RichEmbed()
@@ -41,7 +41,7 @@ module.exports.run = async (bot, message, args) => {
         .addField("Banned By", `${message.author} with ID: ${message.author.id}`)
         .addField("Ban Reason", reason)
         .addField("Ban Time", message.createdAt)
-    // utils.embedAddStamp(majorEventsEmbed, message.author);
+    // utils.embedAddStamp(message, majorEventsEmbed, message.author);
 
 
     let pmEmbed = new Discord.RichEmbed()
@@ -51,11 +51,13 @@ module.exports.run = async (bot, message, args) => {
         .addField("You got banned by", `${message.author}`)
         .addField("For the reason", reason)
         .addField("At", message.createdAt)
-    // utils.embedAddStamp(pmEmbed, message.author);
+    // utils.embedAddStamp(message, pmEmbed, message.author);
 
 
 
-    target.user.send(pmEmbed);
+    target.user.send(pmEmbed).catch(error => {
+        console.log("Error, can't send dm to a user");
+    });
     if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
     message.channel.send(embed);
     //timmeout for the pm to send
