@@ -10,9 +10,15 @@ module.exports.run = async (bot, message, args) => {
 
         // message.channel.send(utils.getHelpString(command));
     } else {
+
+        var commandsArray = [];
+        bot.commands.array().forEach(command => {
+            commandsArray.push(command.help.name);
+        });
+
         var embed = new Discord.RichEmbed()
             .setColor(`${config.embedColor}`)
-            .addField("List of commands", utils.getCommandsNameArray(bot).join(" , "))
+            .addField("List of commands", commandsArray.join(" , "))
         utils.embedAddStamp(embed, message.author);
         message.channel.send(embed);
         return;
@@ -20,32 +26,26 @@ module.exports.run = async (bot, message, args) => {
 
     if (bot.commands.get(bot.aliases.get(targetCommand))) {
         command = bot.commands.get(bot.aliases.get(targetCommand));
-        //if I put this on seperate lines, discord freaks out
-        // var embed = new Discord.RichEmbed()
-        //     .setColor(`${config.embedColor}`)
-        //     .setAuthor(`${bot.user.username} Help`, botIcon)
-        //     .addField(`"${command.help.name}" Command Help`, utils.getHelpString(command))
-        // utils.embedAddStamp(embed, message.author);
-        message.author.send(utils.getHelpString(command));
         var pmEmbed = new Discord.RichEmbed()
             .setColor(`${config.embedColor}`)
         utils.embedAddStamp(pmEmbed, message.author);
-        message.author.send(pmEmbed);
 
-        if (message.channel.type != "dm") {
-            var publicEmbed = new Discord.RichEmbed()
-                .setColor(`${config.embedColor}`)
-                .setTitle(":ok_hand:  Check your DMs!")
-            utils.embedAddStamp(publicEmbed, message.author);
-            message.channel.send(publicEmbed);
+        var dmAble = true;
+        message.author.send(utils.getHelpString(command)).catch(error => {
+            console.log("Error, can't send dm to a user A")
+        })
+        await message.author.send(pmEmbed).catch(error => {
+            console.log("Error, can't send dm to a user B");
+            dmAble = false;
+            utils.simpleError("I can't dm you, please change your settings or unblock me :disappointed_relieved: ", message, true)
+        });
+
+        if (message.channel.type != "dm" && dmAble) {
+            utils.simpleTemporary(":ok_hand:  Check your DMs!", message, config.embedColor)
         }
 
     } else {
-        var embed = new Discord.RichEmbed()
-            .setColor(`${config.embedColor}`)
-            .setTitle(":no_entry_sign:  I can't find that command :(")
-        utils.embedAddStamp(embed, message.author);
-        message.channel.send(embed);
+        utils.simpleError("I can't find that command :frowning2: ", message, true)
     }
 }
 
