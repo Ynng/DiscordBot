@@ -73,8 +73,8 @@ module.exports = {
     },
 
     simpleError: function (text, message, temp) {
-        if (temp) this.simpleTemporary(`:no_entry_sign: ${text}`, message, config.errorColor);
-        else this.simplePermanent(`:no_entry_sign: ${text}`, message, config.errorColor);
+        if (temp) return this.simpleTemporary(`:no_entry_sign: ${text}`, message, config.errorColor);
+        else return this.simplePermanent(`:no_entry_sign: ${text}`, message, config.errorColor);
     },
 
     simpleTemporary: function (text, message, color) {
@@ -83,7 +83,7 @@ module.exports = {
             .setTitle(`${text}`)
             .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
             .setColor(color)
-        message.channel.send(embed).then(msg => {
+        return message.channel.send(embed).then(msg => {
             this.safeDeleteMessage(msg, config.tempTime);
             this.safeDeleteMessage(message, config.tempTime);
         });
@@ -94,7 +94,7 @@ module.exports = {
             .setTitle(`${text}`)
             .setColor(color)
         this.embedAddStamp(message, embed, message.author);
-        message.channel.send(embed)
+        return message.channel.send(embed)
     },
 
     isDM: function (message) {
