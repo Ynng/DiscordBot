@@ -4,15 +4,15 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    if (utils.checkServer(message)) return;
+    if (utils.isDM(message)) return;
     
-    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.errorPreferTemporary("I don't have the permission to kick users", message);
-    if (!message.member.hasPermission(this.help.permission)) return utils.errorPreferTemporary("You don't have the permission to kick users", message);
+    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleError("I don't have the permission to kick users", message, true);
+    if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You don't have the permission to kick users", message, true);
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!target) return utils.errorPreferTemporary("Can't find the user", message)
-    if (target.hasPermission(this.help.permission)) return utils.errorPreferTemporary("You can't kick an Admin", message);
-    if (!target.bannable) return utils.errorPreferTemporary("I can't kick this user", message);
+    if (!target) return utils.simpleError("Can't find the user", message, true)
+    if (target.hasPermission(this.help.permission)) return utils.simpleError("You can't kick an Admin", message, true);
+    if (!target.bannable) return utils.simpleError("I can't kick this user", message, true);
 
     let targetIcon = target.user.avatarURL;
     let authorIcon = message.author.avatarURL;
@@ -22,7 +22,7 @@ module.exports.run = async (bot, message, args) => {
     let reason = args.join(" ");
     if (!reason) reason = "No Reason was Given";
 
-    if (!majorEventsChannel) utils.errorPermanent(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this kick won't be recorded`, message);
+    if (!majorEventsChannel) utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this kick won't be recorded`, message, false);
 
     let embed = new Discord.RichEmbed()
         .setColor(`${config.embedColor}`)

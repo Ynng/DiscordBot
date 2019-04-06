@@ -5,12 +5,6 @@ const Discord = require("discord.js");
 const config = require("../botconfig.json");
 
 module.exports = {
-    embedAddStamp: function (embed, author) {
-        embed
-            .setFooter(`Requested by: ${author.username}`, author.avatarURL)
-            .setTimestamp();
-    },
-
     getAgeDate: function (birthday) {
         return new Date(Date.now() - birthday.valueOf());
     },
@@ -78,49 +72,32 @@ module.exports = {
         return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
     },
 
-    getCommandsNameArray: function (bot) {
-        var output = [];
-
-        bot.commands.array().forEach(command => {
-            output.push(command.help.name);
-        });
-        return output;
+    simpleError: function (text, message, temp) {
+        if (temp) this.simpleTemporary(`:no_entry_sign: ${text}`, message, config.errorColor);
+        else this.simplePermanent(`:no_entry_sign: ${text}`, message, config.errorColor);
     },
 
-    getSimpleEmbed: function (text, user, color) {
+    simpleTemporary: function (text, message, color) {
+        if (!message.deletable) return this.simplePermanent(text, message, color);
         let embed = new Discord.RichEmbed()
-            .setTitle(text)
-            .setColor(color)
-        this.embedAddStamp(embed, user);
-
-        return embed;
-    },
-
-    errorTemporary: function (text, message) {
-        let embed = new Discord.RichEmbed()
-            .setTitle(`:no_entry_sign: ${text}`)
+            .setTitle(`${text}`)
             .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
-            .setColor(config.errorColor)
+            .setColor(color)
         message.channel.send(embed).then(r => {
             this.safeDeleteMessage(r, config.tempTime);
             this.safeDeleteMessage(message, config.tempTime);
         });
     },
 
-    errorPermanent: function (text, message) {
+    simplePermanent: function (text, message, color) {
         let embed = new Discord.RichEmbed()
-            .setTitle(`:no_entry_sign: ${text}`)
-            .setColor(config.errorColor)
+            .setTitle(`${text}`)
+            .setColor(color)
         this.embedAddStamp(embed, message.author);
         message.channel.send(embed)
     },
 
-    errorPreferTemporary: function (text, message) {
-        if (message.deletable)this.errorTemporary(text, message);
-        else this.errorPermanent(text, message);
-    },
-
-    checkServer: function (message) {
+    isDM: function (message) {
         if (message.channel.type != "text") {
             this.errorPermanent("This command only works in a server", message);
             return true;
@@ -129,9 +106,14 @@ module.exports = {
 
     safeDeleteMessage: function (message, timeout) {
         message.delete(timeout).catch(error => {
-            console.log(error);
             console.log("Failed to delete message");
             return;
         });
+    },
+
+    embedAddStamp: function (embed, author) {
+        embed
+            .setFooter(`Requested by: ${author.username}`, author.avatarURL)
+            .setTimestamp();
     }
 };
