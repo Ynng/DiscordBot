@@ -24,7 +24,7 @@ module.exports.run = async (bot, message, args) => {
     if (!majorEventsChannel) utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this ban won't be recorded`, message, false);
     
     let embed = new Discord.RichEmbed()
-        .setColor(`${config.embedColor}`)
+        .setColor(`${config.validColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**@${target.user.username} Just Got Banned!**`)
         .addField(`I have banned`, `${target.user}`)
@@ -62,7 +62,7 @@ module.exports.run = async (bot, message, args) => {
     message.channel.send(embed);
     //timmeout for the pm to send
     setTimeout(() => {
-        message.guild.member(target).ban();
+        // message.guild.member(target).ban();
     }, 2500);
 }
 

@@ -48,6 +48,7 @@ bot.on("message", async message => {
     }else {
       var msg = message.content;
     }
+    msg=msg.replace(/\s+/g,' ');
     var args = msg.split(" ");
     var cmd = args.shift();
 
