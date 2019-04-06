@@ -4,11 +4,17 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    utils.simplePermanent(":ping_pong: pong", message, config.embedColor);
+    let embed = new Discord.RichEmbed()
+        .setTitle(":thinking:  pinging....")
+        .setColor(config.embedColor)
+    utils.embedAddStamp(message, embed, message.author);
+    message.channel.send(embed).then(msg => {
+        msg.edit("",embed.setTitle(`:ping_pong: pong! ${msg.createdTimestamp - message.createdTimestamp}ms`));
+    })
 }
 
 module.exports.help = {
     name: "ping",
-    description: "funz",
-    aliases: ["ping"]
+    description: "Calculates the current ping of the bot, me!",
+    aliases: ["ping", "p"]
 }

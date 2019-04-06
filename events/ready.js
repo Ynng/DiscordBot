@@ -16,5 +16,5 @@ module.exports = bot => {
             .catch(console.error);
         if (statusNum >= statuses.length - 1) statusNum = 0;
         else statusNum++;
-    }, 5000);
+    }, 10000);
 }

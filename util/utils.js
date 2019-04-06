@@ -83,8 +83,8 @@ module.exports = {
             .setTitle(`${text}`)
             .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
             .setColor(color)
-        message.channel.send(embed).then(r => {
-            this.safeDeleteMessage(r, config.tempTime);
+        message.channel.send(embed).then(msg => {
+            this.safeDeleteMessage(msg, config.tempTime);
             this.safeDeleteMessage(message, config.tempTime);
         });
     },
