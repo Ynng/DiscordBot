@@ -4,15 +4,16 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
+  if (utils.isDM(message)) return;
   let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-  if (!target) return message.channel.send("Can't find user.");
+  if (!target) return utils.simpleError("Can't find the user", message, true)
 
   let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
-  if (!majorEventsChannel) return message.channel.send(`Can't find the Major-Events channel: "${config.majorEventsChannel}", please create one or change the Major-Events channel in settings`);
+  if (!majorEventsChannel) return utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", no where to report to`, message, true);
 
   args.shift();
   let reason = args.join(" ");
-  if (!reason) return message.channel.send("You **NEED** a reason to report someone");
+  if (!reason) return utils.simpleError("You need a reason to ban someone", message, true);
 
   let targetIcon = target.user.avatarURL;
   let authorIcon = message.author.avatarURL;
@@ -24,7 +25,7 @@ module.exports.run = async (bot, message, args) => {
     .addField("I have reported", target.user)
     .addField("On the behalf of", message.author)
     .addField("For the reason", reason)
-  utils.embedAddStamp(embed, message.author);
+  // utils.embedAddStamp(message, embed, message.author);
 
 
 
@@ -37,7 +38,7 @@ module.exports.run = async (bot, message, args) => {
     .addField("Report Reason", reason)
     .addField("Report channel", message.channel.name)
     .addField("Report Time", message.createdAt)
-  utils.embedAddStamp(majorEventsEmbed, message.author);
+  // utils.embedAddStamp(message, majorEventsEmbed, message.author);
 
 
   let pmEmbed = new Discord.RichEmbed()
@@ -48,9 +49,11 @@ module.exports.run = async (bot, message, args) => {
     .addField("For the reason", reason)
     .addField("In the channel", message.channel.name)
     .addField("At", message.createdAt)
-  utils.embedAddStamp(pmEmbed, message.author);
+  // utils.embedAddStamp(message, pmEmbed, message.author);
 
-  target.user.send(pmEmbed);
+  target.user.send(pmEmbed).catch(error => {
+    console.log("Error, can't send dm to a user");
+});
   if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
   message.channel.send(embed);
 }

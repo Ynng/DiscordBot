@@ -3,6 +3,8 @@ const config = require("../botconfig.json");
 const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
+  if (utils.isDM(message)) return;
+
   let serverIcon = message.guild.iconURL;
 
   let embed = new Discord.RichEmbed()
@@ -13,7 +15,7 @@ module.exports.run = async (bot, message, args) => {
     .addField("Server age", `${utils.getAgeString(utils.getAgeDate(message.guild.createdAt))}`)
     .addField("Total Members", message.guild.memberCount)
     .addField("Server Owner", message.guild.owner)
-  utils.embedAddStamp(embed, message.author);
+  utils.embedAddStamp(message, embed, message.author);
   message.channel.send(embed);
 }
 
