@@ -19,7 +19,7 @@ module.exports.run = async (bot, message, args) => {
   let authorIcon = message.author.avatarURL;
 
   let embed = new Discord.RichEmbed()
-    .setColor(`${config.embedColor}`)
+    .setColor(`${config.validColor}`)
     .setThumbnail(targetIcon)
     .setTitle(`**@${target.user.username} Just Got Reported!**`)
     .addField("I have reported", target.user)

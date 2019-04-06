@@ -3,5 +3,6 @@
     "majorEventsChannel": "major-events",
     "embedColor": "#6bdbff",
     "errorColor": "#b71c1c",
+    "validColor": "#6aff88",
     "tempTime": 10000
 }

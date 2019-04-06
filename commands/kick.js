@@ -25,7 +25,7 @@ module.exports.run = async (bot, message, args) => {
     if (!majorEventsChannel) utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this kick won't be recorded`, message, false);
 
     let embed = new Discord.RichEmbed()
-        .setColor(`${config.embedColor}`)
+        .setColor(`${config.validColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**@${target.user.username} Just Got Kicked!**`)
         .addField(`I have kicked`, `${target.user}`)
