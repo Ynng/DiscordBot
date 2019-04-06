@@ -9,9 +9,9 @@ module.exports.run = async (bot, message, args) => {
   if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You don't have the permission to remove messages", message, true);
 
   messageCount = args[0];
-  if(!messageCount) return utils.simpleError("You need the number of messages to remove", message, true);
+  if(!messageCount) return utils.simpleError("Please enter the number of messages to remove", message, true);
   messageCount=Number(messageCount);
-  if(!messageCount||messageCount<1) return utils.simpleError("Please enter a positive integer number", message, true);
+  if(!messageCount||messageCount<1||messageCount>100) return utils.simpleError("Please enter a integer number between 1 and 100", message, true);
 
   message.channel.bulkDelete(messageCount)
   utils.simplePermanent(`:ok_hand: Removed ${messageCount} messages from "${message.channel.name}"`, message, config.validColor);
@@ -21,7 +21,7 @@ module.exports.help = {
   name: "removeMessages",
   args: "{# of messages}",
   permission: "MANAGE_MESSAGES",
-  description: "Removes the specified number of messages in the current channel",
-  example: "10 bot",
+  description: "Removes the specified number (1~100) of messages in the current channel",
+  example: "10",
   aliases: ["removeMessages","remove","clear","c"]
 }
