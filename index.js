@@ -5,11 +5,16 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 
 const config = require("./botconfig.json");
+
 const { token } = require("./tokens.json");
 
 const fs = require("fs");
 
 require("./util/eventHandler")(bot)
+
+const commandHandler = require("./util/commandHandler");
+
+
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
@@ -38,27 +43,8 @@ fs.readdir("./commands", (err, files) => {
 
 bot.on("message", async message => {
   if (message.author.bot) return;
-  // if(message.channel.type === "dm") return;
 
-  var prefix = config.prefix;
-
-  if (message.content.startsWith(prefix)||message.channel.type=="dm") {
-    if(message.content.startsWith(prefix)) {
-      var msg = message.content.substring(prefix.length).trim();
-    }else {
-      var msg = message.content;
-    }
-    msg=msg.replace(/\s+/g,' ');
-    var args = msg.split(" ");
-    var cmd = args.shift();
-
-
-    var commmandfile = bot.commands.get(bot.aliases.get(cmd));
-    if (commmandfile) {
-      console.log(`@${message.author.username} just requested "${cmd}" with args "${args}"`);
-      commmandfile.run(bot, message, args);
-    }
-  }
+  commandHandler(bot, message);
 });
 
 bot.login(token).catch(error => {
