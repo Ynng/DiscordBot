@@ -12,8 +12,8 @@ module.exports.run = async (bot, message, args) => {
         msg.edit(embed
             .setTitle(`:ping_pong: pong!`)
             .setColor(config.validColor)
-            .addField("Bot Ping:", `${msg.createdTimestamp - message.createdTimestamp}ms`, true)
-            .addField("Api Ping:",`${bot.ping}ms`,true));
+            .addField("Bot Ping:", `${(msg.createdTimestamp - message.createdTimestamp).toFixed(0)}ms`, true)
+            .addField("Api Ping:", `${bot.ping.toFixed(0)}ms`, true));
     })
 }
 
