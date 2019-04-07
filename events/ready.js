@@ -5,8 +5,8 @@ const config = require("../botconfig.json");
 module.exports = bot => {
     console.log(`${bot.user.username} is online!`);
     let statuses = [
-        `over ${bot.guilds.size} servers!`,
-        `over ${bot.users.size} users!`
+        `over ${bot.guilds.size} server(s)`,
+        `over ${bot.users.size} user(s)`
     ]
     let statusNum = 0;
     setInterval(() => {
