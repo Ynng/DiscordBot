@@ -55,7 +55,9 @@ module.exports.run = async (bot, message, args) => {
         .addField("At", message.createdAt)
     // utils.embedAddStamp(message, pmEmbed, message.author);
 
+    // eslint-disable-next-line no-unused-vars
     target.user.send(pmEmbed).catch(error => {
+        // eslint-disable-next-line no-console
         console.log("Error, can't send dm to a user");
     });
     if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);

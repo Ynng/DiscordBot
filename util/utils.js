@@ -126,7 +126,9 @@ module.exports = {
     },
 
     safeDeleteMessage: function (message, timeout) {
+        // eslint-disable-next-line no-unused-vars
         message.delete(timeout).catch(error => {
+            // eslint-disable-next-line no-console
             console.log("Failed to delete message");
             return;
         });

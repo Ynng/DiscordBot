@@ -11,8 +11,6 @@ module.exports.run = async (bot, message, args) => {
         .setColor(config.embedColor)
     utils.embedAddStamp(message, loadingEmbed, message.author);
 
-    let loadingMessage;
-
     if (!args[0]) return utils.simpleError("You need to enter a valid subreddit or something to search for", message, true);
     if (args[0].startsWith("r/")) {
         if (args.length > 1) {
@@ -50,6 +48,8 @@ module.exports.run = async (bot, message, args) => {
     }
 
     console.log(requestQuery)
+
+    let loadingMessage;
 
     loadingMessage = await message.channel.send(loadingEmbed)
     let requestResponse = (await request(requestQuery, (error, response, body) => {

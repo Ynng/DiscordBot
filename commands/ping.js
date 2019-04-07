@@ -3,7 +3,7 @@ const config = require("../botconfig.json");
 const utils = require("../util/utils")
 
 
-module.exports.run = async (bot, message, args) => {
+module.exports.run = async (bot, message) => {
     let embed = new Discord.RichEmbed()
         .setTitle(":thinking:  pinging....")
         .setColor(config.embedColor)

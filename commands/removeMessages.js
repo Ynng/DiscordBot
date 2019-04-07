@@ -8,7 +8,7 @@ module.exports.run = async (bot, message, args) => {
   if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleError("I don't have the permission to remove messages", message, true);
   if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You don't have the permission to remove messages", message, true);
 
-  messageCount = args[0];
+  var messageCount = args[0];
   if(!messageCount) return utils.simpleError("Please enter the number of messages to remove", message, true);
   messageCount=Number(messageCount);
   if(!messageCount||messageCount<1||messageCount>99) return utils.simpleError("Please enter a integer number between 1 and 100", message, true);
