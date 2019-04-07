@@ -11,17 +11,17 @@ module.exports.run = async (bot, message, args) => {
   messageCount = args[0];
   if(!messageCount) return utils.simpleError("Please enter the number of messages to remove", message, true);
   messageCount=Number(messageCount);
-  if(!messageCount||messageCount<1||messageCount>100) return utils.simpleError("Please enter a integer number between 1 and 100", message, true);
-
-  message.channel.bulkDelete(messageCount)
+  if(!messageCount||messageCount<1||messageCount>99) return utils.simpleError("Please enter a integer number between 1 and 100", message, true);
+  
+  message.channel.bulkDelete(messageCount+1)
   utils.simpleTemporary(`:ok_hand: Removed ${messageCount} messages from "${message.channel.name}"`, message, config.validColor);
 }
 
 module.exports.help = {
-  name: "removeMessages",
+  name: "clear",
   args: "{# of messages}",
   permission: "MANAGE_MESSAGES",
-  description: "Removes the specified number (1~100) of messages in the current channel",
+  description: "Removes the specified number (1~99) of messages in the current channel",
   example: "10",
   aliases: ["removeMessages","remove","deleteMessages","delete","clear","c","d"]
 }
