@@ -5,13 +5,13 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
     if (utils.isDM(message)) return;
-    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleError("I don't have the permission to ban users", message, true);
-    if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You don't have the permission to ban users", message, true);
+    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleError("I need the **Ban Members** permission to do that", message, true);
+    if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You need the **Ban Members** permission to do that", message, true);
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return utils.simpleError("Can't find the user", message, true)
-    if (target.hasPermission(this.help.permission)) return utils.simpleError("You can't ban an Admin", message, true);
-    if (!target.bannable) return utils.simpleError("I can't ban this user", message, true);
+    if (target.hasPermission(this.help.permission)) return utils.simpleError("You can't ban someone with the permission **Ban Members**", message, true);
+    if (!target.bannable) return utils.simpleTemporary(":thinking: I can't ban this user for some reason", message, config.errorColor);
 
     let targetIcon = target.user.avatarURL;
     let authorIcon = message.author.avatarURL;
