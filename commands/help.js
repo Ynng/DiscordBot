@@ -18,7 +18,11 @@ module.exports.run = async (bot, message, args) => {
 
         var embed = new Discord.RichEmbed()
             .setColor(`${config.embedColor}`)
-            .addField("List of commands", commandsArray.join(" , "))
+            .setAuthor(`Help for ${bot.user.username}`,bot.user.displayAvatarURL)
+            .addField("My commands:", `\`${commandsArray.join("\` \`")}\``)
+            .addField("My prefix:", `\`${config.prefix}\``)
+            .addField("Need help on the commands?", `\`\`\`html\n< ${config.prefix}help {command} >\`\`\``)
+
         utils.embedAddStamp(message, embed, message.author);
         message.channel.send(embed);
         return;
@@ -51,8 +55,8 @@ module.exports.run = async (bot, message, args) => {
 
 module.exports.help = {
     name: "help",
-    description: "This displays some information on a specific commmand",
-    args: "{command name}",
+    description: "DM you helpful infos on the given command, or just lists the commands and prefix",
+    args: "[command name]",
     example: `kick`,
     aliases: ["help", "?", "h"]
 }
