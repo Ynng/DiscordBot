@@ -1,6 +1,6 @@
 'use strict';
 //TODO: add tokens to git ignore before making the repo public
-
+//TODO: do overhaul and simplify code
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 
