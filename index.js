@@ -4,6 +4,7 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 
+// eslint-disable-next-line no-unused-vars
 const config = require("./botconfig.json");
 
 const { token } = require("./tokens.json");
@@ -29,7 +30,7 @@ fs.readdir("./commands", (err, files) => {
     return;
   }
 
-  jsfile.forEach((f, i) => {
+  jsfile.forEach((f) => {
     let props = require(`./commands/${f}`)
     bot.commands.set(props.help.name, props);
     props.help.aliases.forEach(alias => {
