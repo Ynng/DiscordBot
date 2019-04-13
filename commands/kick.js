@@ -59,7 +59,7 @@ module.exports.run = async (bot, message, args) => {
 
     message.channel.send(embed);
     setTimeout(() => {
-        // message.guild.member(target).kick();
+        message.guild.member(target).kick();
     }, 2500);
 }
 
