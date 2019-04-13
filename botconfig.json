@@ -1,8 +1,9 @@
 {
     "prefix": "!",
-    "majorEventsChannel": "major-events",
+    "moderationChannel": "major-events",
     "embedColor": "#6bdbff",
     "errorColor": "#b71c1c",
     "validColor": "#35e03e",
+    "loadingColor": "#528596",
     "tempTime": 15000
 }

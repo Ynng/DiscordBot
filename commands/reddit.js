@@ -6,16 +6,12 @@ const request = require("request-promise-native");
 
 
 module.exports.run = async (bot, message, args) => {
-    let loadingEmbed = new Discord.RichEmbed()
-        .setTitle(":thinking:  fetching...")
-        .setColor(config.embedColor)
-    utils.embedAddStamp(message, loadingEmbed, message.author);
-
-    if (!args[0]) return utils.simpleError("You need to enter a valid subreddit or something to search for", message, true);
+    var requestQuery;
+    if (!args[0]) return utils.simpleMessage(":warning: You need to enter a valid subreddit or something to search for", message, config.errorColor, config.tempTime);
     if (args[0].startsWith("r/")) {
         if (args.length > 1) {
             var subreddit = args.shift();
-            var requestQuery = {
+            requestQuery = {
                 uri: `https://www.reddit.com/${subreddit}/search.json`,
                 qs: {
                     q: args.join(" "),
@@ -26,7 +22,7 @@ module.exports.run = async (bot, message, args) => {
                 json: true
             }
         } else {
-            var requestQuery = {
+            requestQuery = {
                 uri: `https://www.reddit.com/${args[0]}.json`,
                 qs: {
                     limit: 50,
@@ -35,7 +31,7 @@ module.exports.run = async (bot, message, args) => {
             }
         }
     } else {
-        var requestQuery = {
+        requestQuery = {
             uri: `https://www.reddit.com/search.json`,
             qs: {
                 q: args.join(" "),
@@ -47,60 +43,37 @@ module.exports.run = async (bot, message, args) => {
         }
     }
 
-    console.log(requestQuery)
-
-    let loadingMessage;
-
-    loadingMessage = await message.channel.send(loadingEmbed)
-    let requestResponse = (await request(requestQuery, (error, response, body) => {
-        if ((response.statusCode % 100) != 2) {
-            // console.log("everything correct");
-        } else {
-            console.log(`error: ${response.statusCode} when requesting from reddit`);
-            utils.editTemporary(`:thinking: error ${response.statusCode} from reddit...`, loadingMessage, message, config.errorColor);
-            // return;
+    let loadingEmbed = new Discord.RichEmbed()
+        .setTitle(":thinking:  fetching...")
+        .setColor(config.loadingColor);
+    utils.embedAddStamp(message, loadingEmbed, message.author);
+    let loadingMessage = await message.channel.send(loadingEmbed);
+    try {
+        var requestResponse = (await request(requestQuery));
+        requestResponse = requestResponse.data.children;
+        for (var i = requestResponse.length - 1; i >= 0; i--) {
+            //filtering out nsfw and videos
+            if (requestResponse[i].data.over_18
+                || requestResponse[i].data.is_video
+                || requestResponse[i].data.media
+                || !(requestResponse[i].data.url.endsWith(".png")
+                    || requestResponse[i].data.url.endsWith(".jpg")
+                    || requestResponse[i].data.url.endsWith(".gif")))
+                requestResponse.splice(i, 1);
         }
-    }).catch(error => { }))
-
-    if (!requestResponse) {
-        if (subreddit) return utils.editTemporary(`:thinking: didn't get any response from reddit, probabily due to mispelled subreddit name`, loadingMessage, message, config.errorColor);
-        return utils.editTemporary(`:thinking: didn't get any response from reddit, maybe reddit is down?`, loadingMessage, message, config.errorColor);
-    }
-    if (requestResponse.error) return utils.editTemporary(`:thinking: error ${requestResponse.error} from reddit...`, loadingMessage, message, config.errorColor);
-    console.log(requestResponse)
-    if (!requestResponse.data)return utils.editTemporary(`:thinking: didn't get any search results, try searching for something else?`, loadingMessage, message, config.errorColor);
-    if (!requestResponse.data.dist||!requestResponse.data.children) return utils.editTemporary(":thinking: didn't get any search results, try searching for something else?", loadingMessage, message, config.errorColor);
-    let responseLength = requestResponse.data.dist
-    requestResponse = requestResponse.data.children;
-    if (responseLength < 1) return utils.editTemporary(":thinking: didn't get any search results, try searching for something else?", loadingMessage, message, config.errorColor);
-
-
-    for (var i = requestResponse.length - 1; i >= 0; i--) {
-        //filtering out nsfw and videos
-        if (requestResponse[i].data.over_18
-            || requestResponse[i].data.is_video
-            || requestResponse[i].data.media
-            || !(requestResponse[i].data.url.endsWith(".png")
-                || requestResponse[i].data.url.endsWith(".jpg")
-                || requestResponse[i].data.url.endsWith(".gif")))
-            requestResponse.splice(i, 1);
+        var responseLength = requestResponse.length;
+        let childrenIndex = Math.floor(Math.random() * responseLength);
+        requestResponse = requestResponse[childrenIndex].data;
+        var redditEmbed = new Discord.RichEmbed()
+            .setAuthor(`r/${requestResponse.subreddit}`)
+            .setURL(`https://www.reddit.com${requestResponse.permalink}`)
+            .setTitle(`${requestResponse.title}`)
+            .setImage(requestResponse.url)
+            .setColor(config.embedColor);
+    } catch (e) {
+        return utils.editSimpleMessage(":frowning2: Error, try searching for something else?", loadingMessage, message, config.errorColor, config.tempTime);
     }
 
-    responseLength = requestResponse.length;
-
-    if (responseLength < 1) return utils.editTemporary(":frowning: Didn't find any **sfw images**, maybe try searching something else?", loadingMessage, message, config.errorColor);
-
-    let childrenIndex = Math.floor(Math.random() * responseLength);
-    // let childrenIndex = 0
-    requestResponse = requestResponse[childrenIndex].data;
-    // console.log(requestResponse)
-
-    let redditEmbed = new Discord.RichEmbed()
-        .setAuthor(`r/${requestResponse.subreddit}`)
-        .setURL(`https://www.reddit.com${requestResponse.permalink}`)
-        .setTitle(`${requestResponse.title}`)
-        .setImage(requestResponse.url)
-        .setColor(config.validColor)
     utils.embedAddStamp(message, redditEmbed, message.author);
     loadingMessage.edit(redditEmbed)
 }
@@ -108,7 +81,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.help = {
     name: "reddit",
     args: `[r/subreddit name] [stuff to search for]`,
-    example: "r/animemes chika",
-    description: "Pulls a random image from the top 50 results",
+    example: "r/anime chika",
+    description: "Pulls a random image from the top 50 results on reddit",
     aliases: ["reddit", "r"],
 }

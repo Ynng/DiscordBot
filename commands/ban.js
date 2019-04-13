@@ -5,64 +5,61 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
     if (utils.isDM(message)) return;
-    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleError("I need the **Ban Members** permission to do that", message, true);
-    if (!message.member.hasPermission(this.help.permission)) return utils.simpleError("You need the **Ban Members** permission to do that", message, true);
+
+    if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleMessage(":no_entry_sign: **I** need the **Ban Members** permission to do that", message, config.errorColor, config.tempTime);
+    if (!message.member.hasPermission(this.help.permission)) return utils.simpleMessage(":no_entry_sign: You need the **Ban Members** permission to do that", message, config.errorColor, config.tempTime);
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!target) return utils.simpleError("Can't find the user", message, true)
-    if (target.hasPermission(this.help.permission)) return utils.simpleError("You can't ban someone with the permission **Ban Members**", message, true);
-    if (!target.bannable) return utils.simpleTemporary(":thinking: I can't ban this user for some reason", message, config.errorColor);
+    if (!target) return utils.simpleMessage(":frowning2: Can't find the user", message, config.errorColor, config.tempTime);
+    if (target.hasPermission(this.help.permission)) return utils.simpleMessage(":warning: You can't ban someone with the permission **Ban Members**", message, config.errorColor, config.tempTime);
+    if (!target.bannable) return utils.simpleMessage(":thinking: I can't ban this user for some reason", message, config.errorColor, config.tempTime);
 
     let targetIcon = target.user.avatarURL;
     let authorIcon = message.author.avatarURL;
-    let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
+    let moderationChannel = message.guild.channels.find(channel => channel.name === config.moderationChannel);
 
     args.shift();
     let reason = args.join(" ");
-    if (!reason) return utils.simpleError("You need a reason to ban someone", message, true);
-    
-    if (!majorEventsChannel) utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", detailed information about this ban won't be recorded`, message, false);
-    
+    if (!reason) return utils.simpleMessage(":warning: You need a reason to ban someone", message, config.errorColor, config.tempTime);
+
+
     let embed = new Discord.RichEmbed()
-        .setColor(`${config.validColor}`)
+        .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**@${target.user.username} Just Got Banned!**`)
-        .addField(`I have banned`, `${target.user}`)
-        .addField(`On the behalf of`, `${message.author}`)
+        .addField(`I have banned`, `${target.user}`, true)
+        .addField(`On the behalf of`, `${message.author}`, true)
         .addField("For the reason", reason)
-    // utils.embedAddStamp(message, embed, message.author);
 
-
-    let majorEventsEmbed = new Discord.RichEmbed()
+    let moderationEmbed = new Discord.RichEmbed()
         .setColor(`${config.embedColor}`)
         .setThumbnail(targetIcon)
         .setTitle(`**Ban**`)
-        .addField("Banned User", `${target.user} with ID: ${target.user.id}`)
-        .addField("Banned By", `${message.author} with ID: ${message.author.id}`)
+        .addField("Banned User", `${target.user} with ID: ${target.user.id}`, true)
+        .addField("Banned By", `${message.author} with ID: ${message.author.id}`, true)
         .addField("Ban Reason", reason)
         .addField("Ban Time", message.createdAt)
-    // utils.embedAddStamp(message, majorEventsEmbed, message.author);
-
 
     let pmEmbed = new Discord.RichEmbed()
         .setColor(`${config.embedColor}`)
         .setThumbnail(authorIcon)
         .setTitle(`**You Just Got Banned from the server "${message.guild.name}"**`)
-        .addField("You got banned by", `${message.author}`)
-        .addField("For the reason", reason)
+        .addField("You got banned by", `${message.author}`, true)
+        .addField("For the reason", reason, true)
         .addField("At", message.createdAt)
-    // utils.embedAddStamp(message, pmEmbed, message.author);
 
-
-
-    target.user.send(pmEmbed).catch(error => {
-        console.log("Error, can't send dm to a user");
+    target.user.send(pmEmbed).catch(() => {
+        console.log("Failed to send pm");
     });
-    if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
+    try {
+        moderationChannel.send(moderationEmbed)
+    } catch (e) {
+        console.log("Moderation channel does not exsist");
+        utils.simpleMessage(`:warning: Can't find the moderation channel: "${config.moderationChannel}", detailed information about this ban won't be recorded`, message, config.errorColor);
+    }
     message.channel.send(embed);
-    //timmeout for the pm to send
     setTimeout(() => {
-        // message.guild.member(target).ban();
+        message.guild.member(target).ban();
     }, 2500);
 }
 
