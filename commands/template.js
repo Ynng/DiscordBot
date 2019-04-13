@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Discord = require("discord.js");
 const config = require("../botconfig.json");
 const utils = require("../util/utils")

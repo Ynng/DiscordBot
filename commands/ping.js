@@ -5,16 +5,16 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message) => {
     let embed = new Discord.RichEmbed()
-        .setTitle(":thinking:  pinging....")
-        .setColor(config.embedColor)
+        .setTitle(":thinking: pinging....")
+        .setColor(config.loadingColor);
     utils.embedAddStamp(message, embed, message.author);
     message.channel.send(embed).then(msg => {
         msg.edit(embed
             .setTitle(`:ping_pong: pong!`)
-            .setColor(config.validColor)
+            .setColor(config.embedColor)
             .addField("Bot Ping:", `${(msg.createdTimestamp - message.createdTimestamp).toFixed(0)}ms`, true)
             .addField("Api Ping:", `${bot.ping.toFixed(0)}ms`, true));
-    })
+    });
 }
 
 module.exports.help = {

@@ -10,7 +10,25 @@ module.exports = {
     },
 
     getAgeString: function (age) {
-        return `${age.getFullYear() - 1970} Years, ${age.getMonth()} Months, ${age.getDate()} Days`
+        let seconds = age.getSeconds();
+        let minutes = age.getMinutes();
+        let hours = age.getHours();
+        let days = age.getDate();
+        let months = age.getMonth();
+        let year = age.getFullYear() - 1970;
+        if (year > 0) {
+            return `${year} Years and ${months} Months`
+        } else if (months > 0) {
+            return `${months} Months and ${days} Days`
+        } else if (days > 0) {
+            return `${days} Days and ${hours} Hours`
+        } else if (hours > 0) {
+            return `${hours} Hours and ${minutes} Minutes`
+        } else if (minutes > 0) {
+            return `${minutes} Minutes and ${seconds} Seconds`
+        } else {
+            return `${seconds} Seconds`
+        }
     },
 
     getPermissionsString: function (permission) {
@@ -72,57 +90,42 @@ module.exports = {
         return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
     },
 
-    simpleError: function (text, message, temp) {
-        if (temp) return this.simpleTemporary(`:no_entry_sign: ${text}`, message, config.errorColor);
-        else return this.simplePermanent(`:no_entry_sign: ${text}`, message, config.errorColor);
+    simpleMessage: function (text, message, color, timeout) {
+        if (!message.deletable || !timeout) {
+            let embed = new Discord.RichEmbed()
+                .setTitle(`${text}`)
+                .setColor(color)
+            this.embedAddStamp(message, embed, message.author);
+            return message.channel.send(embed);
+        } else {
+            let embed = new Discord.RichEmbed()
+                .setTitle(`${text}`)
+                .setFooter(`Removing in ${timeout / 1000} seconds`)
+                .setColor(color)
+            return message.channel.send(embed).then(msg => {
+                this.safeDeleteMessage(msg, timeout);
+                this.safeDeleteMessage(message, timeout);
+            });
+        }
     },
 
-    simpleTemporary: function (text, message, color) {
-        if (!message.deletable) return this.simplePermanent(text, message, color);
-        let embed = new Discord.RichEmbed()
-            .setTitle(`${text}`)
-            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
-            .setColor(color)
-        return message.channel.send(embed).then(msg => {
-            this.safeDeleteMessage(msg, config.tempTime);
-            this.safeDeleteMessage(message, config.tempTime);
-        });
-    },
-
-    simplePermanent: function (text, message, color) {
-        let embed = new Discord.RichEmbed()
-            .setTitle(`${text}`)
-            .setColor(color)
-        this.embedAddStamp(message, embed, message.author);
-        return message.channel.send(embed)
-    },
-    
-    editTemporary: function (text, editMessage, originMessage, color) {
-        if (!originMessage.deletable) return this.editPermanent(text, editMessage, originMessage, color);
-        let embed = new Discord.RichEmbed()
-            .setTitle(`${text}`)
-            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
-            .setColor(color)
-        return editMessage.edit(embed).then(msg => {
-            this.safeDeleteMessage(msg, config.tempTime);
-            this.safeDeleteMessage(originMessage, config.tempTime);
-        });
-    },
-
-    editPermanent: function (text, editMessage, originMessage, color) {
-        let embed = new Discord.RichEmbed()
-            .setTitle(`${text}`)
-            .setFooter(`Removing in ${config.tempTime / 1000} seconds`)
-            .setColor(color)
-        this.embedAddStamp(originMessage, embed, originMessage.author);
-        return editMessage.edit(embed)
-    },
-
-    isDM: function (message) {
-        if (message.channel.type != "text") {
-            this.simpleError("This command only works in a server", message, false);
-            return true;
-        } else return false;
+    editSimpleMessage: function (text, editMessage, originMessage, color, timeout) {
+        if (!originMessage.deletable || !timeout) {
+            let embed = new Discord.RichEmbed()
+                .setTitle(`${text}`)
+                .setColor(color)
+            this.embedAddStamp(originMessage, embed, originMessage.author);
+            return editMessage.edit(embed)
+        } else {
+            let embed = new Discord.RichEmbed()
+                .setTitle(`${text}`)
+                .setFooter(`Removing in ${timeout / 1000} seconds`)
+                .setColor(color)
+            return editMessage.edit(embed).then(msg => {
+                this.safeDeleteMessage(msg, timeout);
+                this.safeDeleteMessage(originMessage, timeout);
+            });
+        }
     },
 
     safeDeleteMessage: function (message, timeout) {
@@ -140,5 +143,12 @@ module.exports = {
                 .setFooter(`Requested by: ${author.username}`, author.avatarURL)
                 .setTimestamp();
         }
+    },
+
+    isDM: function (message) {
+        if (message.channel.type != "text") {
+            this.simpleError("This command only works in a server", message, false);
+            return true;
+        } else return false;
     }
 };

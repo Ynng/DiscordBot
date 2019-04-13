@@ -2,19 +2,19 @@ const Discord = require("discord.js");
 const config = require("../botconfig.json");
 const utils = require("../util/utils")
 
-module.exports.run = async (bot, message, args) => {
+module.exports.run = async (bot, message) => {
   if (utils.isDM(message)) return;
 
   let serverIcon = message.guild.iconURL;
 
   let embed = new Discord.RichEmbed()
-    .setTitle(`**Server Information**`)
     .setColor(`${config.embedColor}`)
     .setThumbnail(serverIcon)
-    .addField("Server Name", message.guild.name)
-    .addField("Server age", `${utils.getAgeString(utils.getAgeDate(message.guild.createdAt))}`)
-    .addField("Total Members", message.guild.memberCount)
-    .addField("Server Owner", message.guild.owner)
+    .setTitle(`Server Information`)
+    .addField("You are currently in", message.guild.name, true)
+    .addField("Owned by", message.guild.owner, true)
+    .addField("It has existed for", `${utils.getAgeString(utils.getAgeDate(message.guild.createdAt))}`, true)
+    .addField("With a population of", message.guild.memberCount)
   utils.embedAddStamp(message, embed, message.author);
   message.channel.send(embed);
 }

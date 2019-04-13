@@ -5,56 +5,49 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
   if (utils.isDM(message)) return;
+  
   let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-  if (!target) return utils.simpleError("Can't find the user", message, true)
+  if (!target) return utils.simpleMessage(":frowning2: Can't find the user", message, config.errorColor, config.tempTime)
 
-  let majorEventsChannel = message.guild.channels.find("name", `${config.majorEventsChannel}`);
-  if (!majorEventsChannel) return utils.simpleError(`Can't find the Major-Events channel: "${config.majorEventsChannel}", no where to report to`, message, true);
+  let moderationChannel = message.guild.channels.find(channel => channel.name === config.moderationChannel);
+  if (!moderationChannel) return utils.simpleMessage(`:warning: Can't find the moderation channel: "${config.moderationChannel}", no where to report to`, message, config.errorColor, config.tempTime);
 
   args.shift();
   let reason = args.join(" ");
-  if (!reason) return utils.simpleError("You need a reason to ban someone", message, true);
+  if (!reason) return utils.simpleMessage(":warning: You need a reason to report someone", message, config.errorColor, config.tempTime);
 
   let targetIcon = target.user.avatarURL;
   let authorIcon = message.author.avatarURL;
 
   let embed = new Discord.RichEmbed()
-    .setColor(`${config.validColor}`)
+    .setColor(`${config.embedColor}`)
     .setThumbnail(targetIcon)
     .setTitle(`**@${target.user.username} Just Got Reported!**`)
-    .addField("I have reported", target.user)
-    .addField("On the behalf of", message.author)
+    .addField("I have reported", target.user, true)
+    .addField("On the behalf of", message.author, true)
     .addField("For the reason", reason)
-  // utils.embedAddStamp(message, embed, message.author);
 
-
-
-  let majorEventsEmbed = new Discord.RichEmbed()
+  let moderationEmbed = new Discord.RichEmbed()
     .setColor(`${config.embedColor}`)
     .setThumbnail(targetIcon)
     .setTitle(`**Report**`)
-    .addField("Reported User", `${target.user} with ID: ${target.user.id}`)
-    .addField("Reported By", `${message.author} with ID: ${message.author.id}`)
+    .addField("Reported User", `${target.user} with ID: ${target.user.id}`, true)
+    .addField("Reported By", `${message.author} with ID: ${message.author.id}`, true)
     .addField("Report Reason", reason)
-    .addField("Report channel", message.channel.name)
     .addField("Report Time", message.createdAt)
-  // utils.embedAddStamp(message, majorEventsEmbed, message.author);
-
 
   let pmEmbed = new Discord.RichEmbed()
     .setColor(`${config.embedColor}`)
     .setThumbnail(authorIcon)
     .setTitle(`**You Just Got Reported in the server "${message.guild.name}"**`)
-    .addField("You got reported by", `${message.author}`)
-    .addField("For the reason", reason)
-    .addField("In the channel", message.channel.name)
+    .addField("You got reported by", `${message.author}`, true)
+    .addField("For the reason", reason, true)
     .addField("At", message.createdAt)
-  // utils.embedAddStamp(message, pmEmbed, message.author);
 
-  target.user.send(pmEmbed).catch(error => {
+  target.user.send(pmEmbed).catch(() => {
     console.log("Error, can't send dm to a user");
 });
-  if (majorEventsChannel) majorEventsChannel.send(majorEventsEmbed);
+moderationChannel.send(moderationEmbed);
   message.channel.send(embed);
 }
 
