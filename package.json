@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A discord bot because why not",
   "main": "index.js",
-  "scripts":  {
+  "scripts": {
     "test": "eslint .",
     "start": "node index.js"
   },
@@ -19,7 +19,6 @@
   "homepage": "https://github.com/Ynng/DiscordBot#readme",
   "dependencies": {
     "discord.js": "^11.4.2",
-    "ms": "^2.1.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7"
   },
