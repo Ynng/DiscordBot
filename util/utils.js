@@ -71,23 +71,26 @@ module.exports = {
         let description = command.help.description;
         let example = command.help.example;
         let name = command.help.name;
+        let argumentHelp = `\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``;
 
         if (!name) name = aliases[0];
         if (!usage) {
             usage = `${config.prefix}${name}`;
+            argumentHelp = "";
             if (!example) example = usage;
         }
         else {
             usage = `${config.prefix}${name} ${usage}`;
             if (!example) example = "No example provided"
-            else example = `${config.prefix}${name} ${example}`
+            else example = example.replace(/\$/g,config.prefix);
         }
-        if (!permission) permission = "None";
-        permission = this.getPermissionsString(permission);
+        if (!permission) permission = "";
+        else{
+            permission = `#Permission Needed\n${this.getPermissionsString(permission)}\n`
+        }
         if (!description) description = "No description provided";
         aliases = aliases.join(" , ");
-
-        return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n# Permission Needed\n${permission}\n# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`\`\`\`md\n> Remove Brackets when typing commands\n> [] = optional arguments\n> {} = mandatory arguments\`\`\``
+        return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n${permission}# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`${argumentHelp}`
     },
 
     simpleMessage: function (text, message, color, timeout) {
@@ -146,8 +149,8 @@ module.exports = {
     },
 
     isDM: function (message) {
-        if (message.channel.type != "text") {
-            this.simpleError("This command only works in a server", message, false);
+        if (message.channel.type == "dm") {
+            this.simpleMessage(":warning: This command only works in a server", message, config.errorColor);
             return true;
         } else return false;
     }
