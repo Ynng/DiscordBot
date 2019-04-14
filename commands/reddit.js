@@ -81,7 +81,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.help = {
     name: "reddit",
     args: `[r/subreddit name] [stuff to search for]`,
-    example: "r/anime chika",
+    example: "$r r/anime chika, $reddit r/animemes, $r minecraft cursed images",
     description: "Pulls a random image from the top 50 results on reddit",
     aliases: ["reddit", "r"],
 }

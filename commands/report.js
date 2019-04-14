@@ -55,6 +55,6 @@ module.exports.help = {
   name: "report",
   args: "{@user} {Reason}",
   description: "Reports the targetted user to the server admins",
-  example: "@xX_KoolGamer6903_Xx for spamming",
+  example: "$report @kOoLGamingContentYT for advertising",
   aliases: ["report"]
 }

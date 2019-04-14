@@ -11,10 +11,10 @@ module.exports.run = async (bot, message) => {
     .setColor(`${config.embedColor}`)
     .setThumbnail(serverIcon)
     .setTitle(`Server Information`)
-    .addField("You are currently in", message.guild.name, true)
-    .addField("Owned by", message.guild.owner, true)
-    .addField("It has existed for", `${utils.getAgeString(utils.getAgeDate(message.guild.createdAt))}`, true)
-    .addField("With a population of", message.guild.memberCount)
+    .addField("Name", message.guild.name, true)
+    .addField("Owner", message.guild.owner, true)
+    .addField("Age", `${utils.getAgeString(utils.getAgeDate(message.guild.createdAt))}`, true)
+    .addField("Population", message.guild.memberCount)
   utils.embedAddStamp(message, embed, message.author);
   message.channel.send(embed);
 }
