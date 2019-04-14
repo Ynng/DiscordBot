@@ -3,7 +3,7 @@ const config = require("../botconfig.json");
 const utils = require("../util/utils")
 
 module.exports.run = async (bot, message) => {
-  if (utils.isDM(message)) return;
+  if (utils.checkDm(message)) return;
 
   let serverIcon = message.guild.iconURL;
 

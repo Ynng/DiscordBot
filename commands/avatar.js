@@ -3,7 +3,7 @@ const config = require("../botconfig.json");
 const utils = require("../util/utils")
 
 module.exports.run = async (bot, message, args) => {
-    if (utils.isDM(message)) return;
+    if (utils.checkDm(message)) return;
 
     let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!target) return utils.simpleMessage(":frowning2: Can't find the user", message, config.errorColor, config.tempTime);

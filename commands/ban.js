@@ -4,7 +4,7 @@ const utils = require("../util/utils")
 
 
 module.exports.run = async (bot, message, args) => {
-    if (utils.isDM(message)) return;
+    if (utils.checkDm(message)) return;
 
     if (!message.guild.member(bot.user).hasPermission(this.help.permission)) return utils.simpleMessage(":no_entry_sign: **I** need the **Ban Members** permission to do that", message, config.errorColor, config.tempTime);
     if (!message.member.hasPermission(this.help.permission)) return utils.simpleMessage(":no_entry_sign: You need the **Ban Members** permission to do that", message, config.errorColor, config.tempTime);
