@@ -8,6 +8,7 @@ module.exports = bot => {
         `over ${bot.users.size} user(s)`
     ]
     let statusNum = 0;
+    // console.log(bot.emojis);
     setInterval(() => {
         let status = statuses[statusNum];
         bot.user.setActivity(`${status} | "${config.prefix}help"`, { type: "WATCHING" })

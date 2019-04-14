@@ -21,5 +21,5 @@ module.exports.run = async (bot, message) => {
 module.exports.help = {
     name: "coinflip",
     description: "Flip a coin, get either Heads or Tails randomly",
-    aliases: ["coinFlip", "coin"]
+    aliases: ["coinFlip", "coin","cf"]
 }
