@@ -21,6 +21,6 @@ module.exports.help = {
   args: "{# of messages}",
   permission: "MANAGE_MESSAGES",
   description: "Removes the specified number (1~99) of messages in the current channel",
-  example: "10",
+  example: "$clear 10, $remove 2, $d 5",
   aliases: ["removeMessages","remove","deleteMessages","delete","clear","c","d"]
 }

@@ -30,21 +30,19 @@ module.exports.run = async (bot, message, args) => {
             .setColor(`${config.embedColor}`)
         utils.embedAddStamp(message, pmEmbed, message.author);
 
+        var dmAble = true;
+        await message.author.send(utils.getHelpString(command)).catch(() => {
+            console.log("Error, can't send dm to a user")
+            dmAble = false;
+            utils.simpleMessage(":frowning2: I can't dm you, please change your settings or unblock me", message, config.errorColor, config.tempTime);
+        })
         if (message.channel.type != "dm") {
-            var dmAble = true;
-            await message.author.send(utils.getHelpString(command)).catch(() => {
-                console.log("Error, can't send dm to a user")
-                dmAble = false;
-                utils.simpleMessage(":frowning2: I can't dm you, please change your settings or unblock me", message, config.errorColor, config.tempTime);
-            })
             if (dmAble) {
                 message.author.send(pmEmbed).catch(() => {
                     // console.log("Error, can't send dm to a user B");
                 });
                 utils.simpleMessage(":ok_hand: Check your DMs!", message, config.embedColor, config.tempTime);
             }
-        } else {
-            message.author.send(pmEmbed);
         }
     } else {
         utils.simpleMessage(":frowning2: I can't find that command, do `!help` to get a list of available commands", message, config.errorColor, config.tempTime)
@@ -55,6 +53,6 @@ module.exports.help = {
     name: "help",
     description: "DM you helpful infos on the given command, or just lists the commands and prefix",
     args: "[command name]",
-    example: `kick`,
+    example: `$help, $? ping, $?`,
     aliases: ["help", "?", "h"]
 }
