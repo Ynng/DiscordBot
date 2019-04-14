@@ -148,7 +148,7 @@ module.exports = {
         }
     },
 
-    isDM: function (message) {
+    checkDm: function (message) {
         if (message.channel.type == "dm") {
             this.simpleMessage(":warning: This command only works in a server", message, config.errorColor);
             return true;
