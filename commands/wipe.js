@@ -17,10 +17,10 @@ module.exports.run = async (bot, message, args) => {
 }
 
 module.exports.help = {
-  name: "clear",
+  name: "wipe",
   args: "{# of messages}",
   permission: "MANAGE_MESSAGES",
-  description: "Removes the specified number (1~99) of messages in the current channel",
-  example: "$clear 10, $remove 2, $d 5",
-  aliases: ["removeMessages","remove","deleteMessages","delete","clear","c","d"]
+  description: "Wipes the specified number (1~99) of messages in the current channel",
+  example: "$wipe 10, $remove 2, $w 5",
+  aliases: ["wipe", "w", "remove","clear","c"]
 }
