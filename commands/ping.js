@@ -5,10 +5,9 @@ const utils = require("../util/utils")
 
 module.exports.run = async (bot, message) => {
     let embed = new Discord.RichEmbed()
-        .setTitle(":thinking: pinging....")
+        .setTitle(bot.emojis.get(config.loadingEmojiId)+" pinging....")
         .setColor(config.loadingColor);
     utils.embedAddStamp(message, embed, message.author);
-    message.channel.send(""+bot.emojis.get("436677458339823636"));
     message.channel.send(embed).then(msg => {
         msg.edit(embed
             .setTitle(`:ping_pong: pong!`)

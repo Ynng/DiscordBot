@@ -44,7 +44,7 @@ module.exports.run = async (bot, message, args) => {
     }
 
     let loadingEmbed = new Discord.RichEmbed()
-        .setTitle(":thinking:  fetching...")
+        .setTitle(bot.emojis.get(config.loadingEmojiId)+" fetching...")
         .setColor(config.loadingColor);
     utils.embedAddStamp(message, loadingEmbed, message.author);
     let loadingMessage = await message.channel.send(loadingEmbed);
