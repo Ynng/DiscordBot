@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const config = require("../botconfig.json");
-const utils = require("../util/utils")
+const utils = require("../util/utils");
 
 module.exports.run = async (bot, message, args) => {
     if (utils.checkDm(message)) return;
@@ -19,7 +19,7 @@ module.exports.run = async (bot, message, args) => {
     utils.embedAddStamp(message, embed, message.author);
 
     message.channel.send(embed);
-}
+};
 
 module.exports.help = {
     name: "avater",
@@ -27,4 +27,4 @@ module.exports.help = {
     description: "Gets the avatar/profile picture of the given user",
     example: "$a @KoolGamer5742, $pfp @xxYitisbiggestfanxx",
     aliases: ["a","avater","pfp","profile"]
-}
+};
