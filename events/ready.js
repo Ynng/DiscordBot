@@ -6,7 +6,7 @@ module.exports = bot => {
     let statuses = [
         `over ${bot.guilds.size} server(s)`,
         `over ${bot.users.size} user(s)`
-    ]
+    ];
     let statusNum = 0;
     // console.log(bot.emojis);
     setInterval(() => {
@@ -17,4 +17,4 @@ module.exports = bot => {
         if (statusNum >= statuses.length - 1) statusNum = 0;
         else statusNum++;
     }, 10000);
-}
+};

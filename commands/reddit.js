@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const config = require("../botconfig.json");
-const utils = require("../util/utils")
+const utils = require("../util/utils");
 const request = require("request-promise-native");
 
 
@@ -20,7 +20,7 @@ module.exports.run = async (bot, message, args) => {
                     restrict_sr: 1
                 },
                 json: true
-            }
+            };
         } else {
             requestQuery = {
                 uri: `https://www.reddit.com/${args[0]}.json`,
@@ -28,7 +28,7 @@ module.exports.run = async (bot, message, args) => {
                     limit: 50,
                 },
                 json: true
-            }
+            };
         }
     } else {
         requestQuery = {
@@ -40,11 +40,11 @@ module.exports.run = async (bot, message, args) => {
                 restrict_sr: 0
             },
             json: true
-        }
+        };
     }
 
     let loadingEmbed = new Discord.RichEmbed()
-        .setTitle(bot.emojis.get(config.loadingEmojiId)+" fetching...")
+        .setTitle(`${bot.emojis.get(config.emojis.loadingEmojiId)} fetching...`)
         .setColor(config.loadingColor);
     utils.embedAddStamp(message, loadingEmbed, message.author);
     let loadingMessage = await message.channel.send(loadingEmbed);
@@ -75,8 +75,8 @@ module.exports.run = async (bot, message, args) => {
     }
 
     utils.embedAddStamp(message, redditEmbed, message.author);
-    loadingMessage.edit(redditEmbed)
-}
+    loadingMessage.edit(redditEmbed);
+};
 
 module.exports.help = {
     name: "reddit",
@@ -84,4 +84,4 @@ module.exports.help = {
     example: "$r r/anime chika, $reddit r/animemes, $r minecraft cursed images",
     description: "Pulls a random image from the top 50 results on reddit",
     aliases: ["reddit", "r"],
-}
+};

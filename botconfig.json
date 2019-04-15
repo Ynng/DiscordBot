@@ -5,6 +5,10 @@
     "errorColor": "#b71c1c",
     "validColor": "#35e03e",
     "loadingColor": "#528596",
-    "loadingEmojiId":"567467203402924042",
-    "tempTime": 15000
+    "tempTime": 15000,
+    "emojis":{
+        "loadingEmojiId":"567467203402924042",
+        "coinTailEmojiId":"567479781281497102",
+        "coinHeadEmojiId":"567478889379528734"
+    }
 }
