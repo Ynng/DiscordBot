@@ -163,7 +163,7 @@ module.exports.run = async (bot, message, args) => {
 module.exports.help = {
     name: "anime",
     args: `{Search Term}`,
-    example: "$a boku no pico, $a sakurasou",
+    example: "$a boku no pico, $anime sakurasou",
     description: "Pulls information about the searched anime from anilist",
     aliases: ["a", "anime"],
 };
