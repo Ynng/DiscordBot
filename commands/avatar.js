@@ -25,6 +25,6 @@ module.exports.help = {
     name: "avater",
     args: "{@user}",
     description: "Gets the avatar/profile picture of the given user",
-    example: "$a @KoolGamer5742, $pfp @xxYitisbiggestfanxx",
-    aliases: ["a","avater","pfp","profile"]
+    example: "$avatar @KoolGamer5742, $pfp @xxYitisbiggestfanxx",
+    aliases: ["avater","pfp","profile"]
 };
