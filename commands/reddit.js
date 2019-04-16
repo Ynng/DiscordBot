@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const config = require("../botconfig.json");
 const utils = require("../util/utils");
 const request = require("request-promise-native");
-
+const queryLimit = 30;
 
 
 module.exports.run = async (bot, message, args) => {
@@ -16,7 +16,7 @@ module.exports.run = async (bot, message, args) => {
                 qs: {
                     q: args.join(" "),
                     sort: "relevance",
-                    limit: 50,
+                    limit: queryLimit,
                     restrict_sr: 1
                 },
                 json: true
@@ -25,7 +25,7 @@ module.exports.run = async (bot, message, args) => {
             requestQuery = {
                 uri: `https://www.reddit.com/${args[0]}.json`,
                 qs: {
-                    limit: 50,
+                    limit: queryLimit,
                 },
                 json: true
             };
@@ -36,7 +36,7 @@ module.exports.run = async (bot, message, args) => {
             qs: {
                 q: args.join(" "),
                 sort: "relevance",
-                limit: 50,
+                limit: queryLimit,
                 restrict_sr: 0
             },
             json: true
