@@ -17,17 +17,17 @@ module.exports = {
         let months = age.getMonth();
         let year = age.getFullYear() - 1970;
         if (year > 0) {
-            return `${year} Years and ${months} Months`
+            return `${year} Years and ${months} Months`;
         } else if (months > 0) {
-            return `${months} Months and ${days} Days`
+            return `${months} Months and ${days} Days`;
         } else if (days > 0) {
-            return `${days} Days and ${hours} Hours`
+            return `${days} Days and ${hours} Hours`;
         } else if (hours > 0) {
-            return `${hours} Hours and ${minutes} Minutes`
+            return `${hours} Hours and ${minutes} Minutes`;
         } else if (minutes > 0) {
-            return `${minutes} Minutes and ${seconds} Seconds`
+            return `${minutes} Minutes and ${seconds} Seconds`;
         } else {
-            return `${seconds} Seconds`
+            return `${seconds} Seconds`;
         }
     },
 
@@ -64,7 +64,7 @@ module.exports = {
         return output;
     },
 
-    getMonth: function (intMonth) {
+    getMonthStr: function (intMonth) {
         switch (intMonth) {
             case 1:
             default:
@@ -111,30 +111,30 @@ module.exports = {
         }
         else {
             usage = `${config.prefix}${name} ${usage}`;
-            if (!example) example = "No example provided"
+            if (!example) example = "No example provided";
             else example = example.replace(/\$/g, config.prefix);
         }
         if (!permission) permission = "";
         else {
-            permission = `#Permission Needed\n${this.getPermissionsString(permission)}\n`
+            permission = `#Permission Needed\n${this.getPermissionsString(permission)}\n`;
         }
         if (!description) description = "No description provided";
         aliases = aliases.join(" , ");
-        return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n${permission}# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`${argumentHelp}`
+        return `\`\`\`html\n< ${usage} >\`\`\`\`\`\`md\n# Aliases\n${aliases}\n${permission}# Description\n${description}\n# Example Commmand(s)\n${example}\`\`\`${argumentHelp}`;
     },
 
     simpleMessage: function (text, message, color, timeout) {
         if (!message.deletable || !timeout) {
             let embed = new Discord.RichEmbed()
                 .setTitle(`${text}`)
-                .setColor(color)
+                .setColor(color);
             this.embedAddStamp(message, embed, message.author);
             return message.channel.send(embed);
         } else {
             let embed = new Discord.RichEmbed()
                 .setTitle(`${text}`)
                 .setFooter(`Removing in ${timeout / 1000} seconds`)
-                .setColor(color)
+                .setColor(color);
             return message.channel.send(embed).then(msg => {
                 this.safeDeleteMessage(msg, timeout);
                 this.safeDeleteMessage(message, timeout);
@@ -146,14 +146,14 @@ module.exports = {
         if (!originMessage.deletable || !timeout) {
             let embed = new Discord.RichEmbed()
                 .setTitle(`${text}`)
-                .setColor(color)
+                .setColor(color);
             this.embedAddStamp(originMessage, embed, originMessage.author);
-            return editMessage.edit(embed)
+            return editMessage.edit(embed);
         } else {
             let embed = new Discord.RichEmbed()
                 .setTitle(`${text}`)
                 .setFooter(`Removing in ${timeout / 1000} seconds`)
-                .setColor(color)
+                .setColor(color);
             return editMessage.edit(embed).then(msg => {
                 this.safeDeleteMessage(msg, timeout);
                 this.safeDeleteMessage(originMessage, timeout);
