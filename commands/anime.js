@@ -58,7 +58,7 @@ module.exports.run = async (bot, message, args) => {
     let loadingMessage = await message.channel.send(loadingEmbed);
     try {
         var requestResponse = (await request(requestQuery));
-        console.log(requestResponse);
+        // console.log(requestResponse);
         let anime = requestResponse.data.Media;
 
         var animeEmbed = new Discord.RichEmbed()
