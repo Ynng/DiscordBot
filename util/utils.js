@@ -64,6 +64,36 @@ module.exports = {
         return output;
     },
 
+    getMonth: function (intMonth) {
+        switch (intMonth) {
+            case 1:
+            default:
+                return 'Jan';
+            case 2:
+                return 'Feb';
+            case 3:
+                return 'Mar';
+            case 4:
+                return 'Apr';
+            case 5:
+                return 'May';
+            case 6:
+                return 'Jun';
+            case 7:
+                return 'Jul';
+            case 8:
+                return 'Aug';
+            case 9:
+                return 'Sep';
+            case 10:
+                return 'Oct';
+            case 11:
+                return 'Nov';
+            case 12:
+                return 'Dec';
+        }
+    },
+
     getHelpString: function (command) {
         let usage = command.help.args;
         let aliases = command.help.aliases;
@@ -82,10 +112,10 @@ module.exports = {
         else {
             usage = `${config.prefix}${name} ${usage}`;
             if (!example) example = "No example provided"
-            else example = example.replace(/\$/g,config.prefix);
+            else example = example.replace(/\$/g, config.prefix);
         }
         if (!permission) permission = "";
-        else{
+        else {
             permission = `#Permission Needed\n${this.getPermissionsString(permission)}\n`
         }
         if (!description) description = "No description provided";
