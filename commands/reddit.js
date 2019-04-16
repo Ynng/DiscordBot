@@ -67,7 +67,7 @@ module.exports.run = async (bot, message, args) => {
         var redditEmbed = new Discord.RichEmbed()
             .setAuthor(`r/${requestResponse.subreddit}`)
             .setURL(`https://www.reddit.com${requestResponse.permalink}`)
-            .setTitle(`${requestResponse.title}`)
+            .setTitle(requestResponse.title)
             .setImage(requestResponse.url)
             .setColor(config.embedColor);
     } catch (e) {
