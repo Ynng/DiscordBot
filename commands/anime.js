@@ -14,8 +14,10 @@ module.exports.run = async (bot, message, args) => {
           romaji
           native
         }
+        format
         status
-        description(asHtml: false)
+        episodes
+        duration
         startDate {
           year
           month
@@ -26,9 +28,9 @@ module.exports.run = async (bot, message, args) => {
           month
           day
         }
-        episodes
-        duration
         meanScore
+        popularity
+        description(asHtml: false)
         coverImage {
           large
         }
@@ -60,11 +62,10 @@ module.exports.run = async (bot, message, args) => {
         let anime = requestResponse.data.Media;
 
         var animeEmbed = new Discord.RichEmbed()
-            .setURL(`https://anilist.co/anime/${anime.id}`)
             .setColor(config.embedColor);
 
         //Thumbnail
-        if(anime.coverImage["large"])
+        if (anime.coverImage["large"])
             animeEmbed.setThumbnail(anime.coverImage["large"]);
 
         //Title
@@ -89,6 +90,18 @@ module.exports.run = async (bot, message, args) => {
             animeEmbed.setDescription(description);
         }
 
+        //Format
+        if (anime.format) {
+            animeEmbed.addField("Format", anime.format
+                .replace('TV_SHORT', 'TV Short')
+                .replace('MOVIE', 'Movie')
+                .replace('SPECIAL', 'Special')
+                .replace('MUSIC', 'Music')
+                .replace('MANGA', 'Manga')
+                .replace('NOVEL', 'Novel')
+                .replace('ONE_SHOT', 'One Shot'), true);
+        }
+
         //Status
         if (anime.status) {
             animeEmbed.addField("Status", anime.status
@@ -96,9 +109,6 @@ module.exports.run = async (bot, message, args) => {
                 .replace('RELEASING', 'Airing')
                 .replace('NOT_YET_RELEASED', 'Not Released'), true);
         }
-        //Episode/Time Count
-        if(anime.episodes||anime.duration)
-            animeEmbed.addField(anime.episodes != 1 ? "Episodes" : "Episode Length", `${anime.episodes != 1 ? anime.episodes + "eps (" + anime.duration + "mins)" : anime.duration + "mins"}`, true);
 
         //Dates
         var dateStr = "";
@@ -120,14 +130,27 @@ module.exports.run = async (bot, message, args) => {
         }
         if (dateStr && dateTitleStr) animeEmbed.addField(dateTitleStr, dateStr, true);
 
+        //Episode/Time Count
+        if (anime.episodes || anime.duration)
+            animeEmbed.addField(anime.episodes != 1 ? "Episodes" : "Episode Length", `${anime.episodes != 1 ? anime.episodes + "eps (" + anime.duration + "mins)" : anime.duration + "mins"}`, true);
+
         //Score
-        if(anime.meanScore)
-            animeEmbed.addField("Score",`${anime.meanScore/10.0}/10`, true);
+        if (anime.meanScore)
+            animeEmbed.addField("Score", `${anime.meanScore / 10.0}/10`, true);
+
+        //Popularity
+        if (anime.popularity)
+            animeEmbed.addField("Popularity", anime.popularity, true);
 
         //Description
-        anime.description = (anime.description || "").replace(/<[a-zA-Z0-9]+>/g, '').replace(/[\r\n]/g, ' ');
-        if(anime.description)animeEmbed.addField("Description", anime.description);
-        console.log(anime.coverImage);
+        if (anime.description) {
+            anime.description = (anime.description).replace(/<[a-zA-Z0-9]+>/g, '').replace(/[\r\n]/g, ' ');
+            if (anime.description.length > 233) anime.description = anime.description.substring(0, 233) + `... [Read More](https://anilist.co/anime/${anime.id})`;
+            animeEmbed.addField("Description", anime.description, true);
+        } else {
+            animeEmbed.addField("Want more information?", `[Learn More](https://anilist.co/anime/${anime.id})`, true);
+        }
+
 
     } catch (e) {
         return utils.editSimpleMessage(":frowning2: No anime found, try searching for something else?", loadingMessage, message, config.errorColor, config.tempTime);
