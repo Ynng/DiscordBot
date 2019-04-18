@@ -85,7 +85,7 @@ module.exports.run = async (bot, message, args) => {
         if (animeTitle.length > 0) {
             var description = "also known as:\n";
             animeTitle.forEach((name) => {
-                description += ` \` ${name} \` \n`;
+                description += `*\`${name}\`*\n`;
             });
             animeEmbed.setDescription(description);
         }
@@ -144,7 +144,7 @@ module.exports.run = async (bot, message, args) => {
 
         //Description
         if (anime.description) {
-            anime.description = (anime.description).replace(/<[a-zA-Z0-9]+>/g, '').replace(/[\r\n]/g, ' ');
+            anime.description = (anime.description).replace(/<[/a-zA-Z0-9]+>/g, '').replace(/[\r\n]/g, ' ');
             if (anime.description.length > 233) anime.description = anime.description.substring(0, 233) + `... [Read More](https://anilist.co/anime/${anime.id})`;
             animeEmbed.addField("Description", anime.description, true);
         } else {
