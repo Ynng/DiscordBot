@@ -27,4 +27,4 @@ module.exports = (bot, message) => {
             commmandfile.run(bot, message, args);
         }
     }
-}  
+};
